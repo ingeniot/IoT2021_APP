@@ -8,27 +8,85 @@
       title="IngenIoT"
     >
       <template slot-scope="props" slot="links">
-
         <sidebar-item
           :link="{
-            name: 'Dashboard',
+            name: 'Home',
             icon: 'tim-icons icon-chart-pie-36',
-            path: '/'
+            path: '/home'
           }"
         >
         </sidebar-item>
-
-
-
-
-
-
+                <sidebar-item
+          :link="{
+            name: 'Rules',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/rules'
+          }"
+        >
+        </sidebar-item>
+                <sidebar-item
+          :link="{
+            name: 'Customers',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/customers'
+          }"
+        >
+        </sidebar-item>
+                <sidebar-item
+          :link="{
+            name: 'Domains',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/domains'
+          }"
+        >
+        </sidebar-item>
+                <sidebar-item
+          :link="{
+            name: 'Devices',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/devices'
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Entities',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/entities'
+          }"
+        >
+        </sidebar-item>
+                <sidebar-item
+          :link="{
+            name: 'Widgets',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/widgets'
+          }"
+        >
+        </sidebar-item>
+                <sidebar-item
+          :link="{
+            name: 'Dashboards',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/dashboards'
+          }"
+        >
+        </sidebar-item>
+                <sidebar-item
+          :link="{
+            name: 'Logs',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/logs'
+          }"
+        >
+        </sidebar-item>
+<!--
         <li class="active-pro">
           <a href="https://www.creative-tim.com/product/nuxt-black-dashboard-pro" target="_blank">
             <i class="tim-icons icon-spaceship"></i>
             <p>Upgrade to PRO</p>
           </a>
-        </li>
+        </li>-->
       </template>
     </side-bar>
     <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
@@ -41,7 +99,7 @@
         :class="{ content: !isFullScreenRoute }"
         @click="toggleSidebar"
       >
-        <zoom-center-transition :duration="200" mode="out-in">
+        <zoom-center-transition :duration="500" mode="out-in">
           <!-- your content here -->
           <nuxt></nuxt>
         </zoom-center-transition>
