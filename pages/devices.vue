@@ -5,7 +5,6 @@
         <card>
             <div slot="header"> 
             <h4 class="card-tittle">Devices</h4>
-
             </div>
             <div class="row">
                 <div class="col-4">
@@ -55,6 +54,9 @@
 
                     <el-table-column label="Actions">
                         <div slot-scope="{row, $index}">
+                            <el-tooltip content="Save status indicator">
+                                <i class="fas fa-database" :class="{'text-success' : row.saveStatus,'text-dark' : !row.saveStatus}"></i>
+                            </el-tooltip>
                             <el-tooltip content="Save Data">
                                 <base-switch @click="updateSaveStatus($index)" :value= "row.saveStatus" type="primary" on-text="on" off-text="off" ></base-switch>
                             </el-tooltip>
@@ -69,6 +71,7 @@
                </el-table>
             </card>            
         </div>
+        <Json :value="devices"></Json>
     </div>
 </template>
 

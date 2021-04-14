@@ -12,6 +12,9 @@
         <slot name="off"> {{ offText }} </slot>
       </span>
     </div>
+  <pre>
+    {{devices}}
+  </pre>
   </div>
 </template>
 <script>
