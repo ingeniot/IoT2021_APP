@@ -41,7 +41,7 @@
                 <h4 class="card-tittle">Devices list</h4>
                </div>
 
-               <el-table :data="devices">
+               <el-table :data="$store.state.devices">
                     <el-table-column label="#" min-width="50" allign="center">
                         <div slot-scope="{row, $index}">
                             {{$index+1}}
@@ -71,7 +71,7 @@
                </el-table>
             </card>            
         </div>
-        <Json :value="devices"></Json>
+        <Json :value="$store.state.devices"></Json>
     </div>
 </template>
 
@@ -79,7 +79,9 @@
 import { Table, TableColumn } from 'element-ui';
 import { Select, Option } from 'element-ui';
 import BaseButton from '../components/BaseButton.vue';
+
 export default{
+    middleware: "authenticated",
     components: {
         [BaseButton.name]:BaseButton,
         [Table.name]: Table,
@@ -89,40 +91,50 @@ export default{
 
     },
     data(){
-        return{
-            devices: [
-                {
-                    name: "home",
-                    dId:"888",
-                    templateName:"Powermeter",
-                    templateId: "123",
-                    saveStatus:false
-                },
-                                {
-                    name: "office",
-                    dId:"888",
-                    templateName:"Powermeter",
-                    templateId: "123",
-                    saveStatus:true
-                },
-                {
-                    name: "factory",
-                    dId:"880",
-                    templateName:"Powermeter",
-                    templateId: "123",
-                    saveStatus:false
-                }
-            ]
+        return{        
+
         };
     },
-    methods: {
-    deleteDevice(rowDevice){
-        alert("DELETING" + rowDevice.name)
+    mounted(){
+        this.$store.dispatch("getDevices");
         },
-    updateSaveStatus(index){
-        this.devices[index].saveStatus = !this.devices[index].saveStatus
 
-    }    
+    methods: {
+        deleteDevice(device) {
+        const axiosHeader = {
+            headers: {
+            token: this.$store.state.auth.token
+            },
+            params: {
+            dId: device.dId
+            }
+        };
+    this.$axios
+            .delete("/device", axiosHeader)
+            .then(res => {
+            if (res.data.status == "success") {
+                this.$notify({
+                type: "success",
+                icon: "tim-icons icon-check-2",
+                message: device.name + " deleted!"
+                });
+                this.$store.dispatch("getDevices");
+            }
+            
+            })
+            .catch(e => {
+            console.log(e);
+            this.$notify({
+                type: "danger",
+                icon: "tim-icons icon-alert-circle-exc",
+                message: " Error deleting " + device.name
+            });
+            });
+
+        },
+        updateSaveStatus(index){
+            this.devices[index].saveStatus = !this.devices[index].saveStatus
+        }    
     }
 };
 </script>
