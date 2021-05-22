@@ -588,26 +588,27 @@
       </div>
     </div>
 
-    <!-- SAVE TEMPLATE-->
-    <div class="row">
+    <!-- SAVE DASHBOARD-->
+    <!--    <div class="row" v-if="widgets.length > 0">-->
+    <div class="row" >
       <card>
         <div slot="header">
-          <h4 class="card-title">Save Template</h4>
+          <h4 class="card-title">Save Dashboard</h4>
         </div>
 
         <div class="row">
           <base-input
             class="col-4"
-            v-model="templateName"
-            label="Template Name"
+            v-model="dashboardName"
+            label="Dashoard Name"
             type="text"
           >
           </base-input>
 
           <base-input
             class="col-8"
-            v-model="templateDescription"
-            label="Template Description"
+            v-model="dashboardDescription"
+            label="Dashboard Description"
             type="text"
           >
           </base-input>
@@ -622,24 +623,25 @@
               type="primary"
               class="mb-3 pull-right"
               size="lg"
-              @click="saveTemplate()"
+              @click="saveDashboard()"
+              :disabled="widgets.length == 0"
             >
-              Save Template
+              Save Dashboard
             </base-button>
           </div>
         </div>
       </card>
     </div>
 
-    <!-- TEMPLATES TABLE -->
+    <!-- DASHBOARDS TABLE -->
     <div class="row">
       <card>
         <div slot="header">
-          <h4 class="card-title">Templates</h4>
+          <h4 class="card-title">Dashboards</h4>
         </div>
 
         <div class="row">
-          <el-table :data="templates">
+          <el-table :data="dashboards">
             <el-table-column min-width="50" label="#" align="center">
               <div class="photo" slot-scope="{ row, $index }">
                 {{ $index + 1 }}
@@ -670,7 +672,7 @@
                   placement="top"
                 >
                   <base-button
-                    @click="deleteTemplate(row)"
+                    @click="deleteDashboard(row)"
                     type="danger"
                     icon
                     size="sm"
@@ -688,6 +690,7 @@
 
     <!-- JSONS -->
     <Json :value="widgets"></Json>
+    <Json :value="dashboards"></Json>    
   </div>
 </template>
 
@@ -695,6 +698,7 @@
 import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
 export default {
+  middleware: "authenticated",
   components: {
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
@@ -704,10 +708,10 @@ export default {
   data() {
     return {
       widgets: [],
-      templates: [],
+      dashboards: [],
       widgetType: "",
-      templateName: "",
-      templateDescription: "",
+      dashboardName: "",
+      dashboardDescription: "",
       ncConfig: {
         userId: "sampleuserid",
         selectedDevice: {
@@ -770,8 +774,8 @@ export default {
         selectedDevice: {
           name: "Home",
           dId: "8888",
-          templateName: "Power Sensor",
-          templateId: "984237562348756ldksjfh",
+          dashboardName: "Power Sensor",
+          dashboardId: "984237562348756ldksjfh",
           saverRule: false
         },
         variableFullName: "Pump",
@@ -787,8 +791,8 @@ export default {
         selectedDevice: {
           name: "Home",
           dId: "8888",
-          templateName: "Power Sensor",
-          templateId: "984237562348756ldksjfh",
+          dashboardName: "Power Sensor",
+          dashboardId: "984237562348756ldksjfh",
           saverRule: false
         },
         variableFullName: "Pump",
@@ -800,6 +804,11 @@ export default {
       }
     };
   },
+
+  mounted(){
+    this.getDashboards();
+  },
+
   methods: {
     addNewWidget() {
       if (this.widgetType == "numberchart") {
@@ -833,6 +842,86 @@ export default {
         );
       }
       return result;
+    },
+
+
+    async saveDashboard(){
+      const axiosHeader = {
+        headers: {
+          token: this.$store.state.auth.token
+        }
+      };
+        const toSend = {
+        dashboard: {
+          name: this.dashboardName,
+          description: this.dashboardDescription,
+          widgets: this.widgets
+        }
+      }
+
+      try {
+        const res = await this.$axios.post("/dashboard", toSend, axiosHeader) ;
+        if(res.data.status == "success"){
+          this.$notify({type: 'success', icon: 'tim-icons icon-alert-circle-exc', message: 'Dashboard created!'});
+          this.getDashboards();
+        } 
+      } catch (error) {
+          this.$notify({type: 'danger', icon: 'tim-icons icon-alert-circle-exc', message: 'Dashboard creating error!'});
+          console.log(error);
+          return;
+        
+      }
+
+    },
+
+    async getDashboards(){
+      const axiosHeader = {
+        headers: {
+          token: this.$store.state.auth.token
+        }
+      };
+      try {
+        const res = await this.$axios.get("/dashboard", axiosHeader);
+        console.log(res.data);
+        if (res.data.status == "success"){
+          this.dashboards = res.data.data;
+        }
+      } catch (error) {
+        this.$notify({
+          type: "danger",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: "Error getting dashboards"
+        });
+        console.log(error);
+        return;
+      }
+    },
+    async deleteDashboard(dashboard) {
+      const axiosHeader = {
+          headers: {
+          token: this.$store.state.auth.token
+          },
+          params: {
+          dashboardId: dashboard._id
+          }
+      };
+      try {
+        const res = await this.$axios.delete("/dashboard", axiosHeader);   
+        if(res.data.status == "success"){
+              this.$notify({
+              type: "success",
+              icon: "tim-icons icon-check-2",
+              message: dashboard.name + " deleted!"
+              }); 
+              this.getDashboards();               
+        } 
+      } catch (error) {
+          this.$notify({
+              type: "danger",
+              icon: "tim-icons icon-alert-circle-exc",
+              message: " Error deleting " + dashboard.name
+          });              
+      };
     }
   }
 };

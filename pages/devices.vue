@@ -4,31 +4,29 @@
         <div class="row">
         <card>
             <div slot="header"> 
-            <h4 class="card-tittle">Devices</h4>
+            <h4 class="card-tittle">Add devices</h4>
             </div>
             <div class="row">
                 <div class="col-4">
-                    <base-input label="Device name" type="text" placeholder="Name*"></base-input>
+                    <base-input label="Device name" type="text" placeholder="Name*" v-model="newDevice.name"></base-input>
             </div>         
                 <div class="col-4">
-                    <base-input label="Serial number" type="text" placeholder="Serial Number*"></base-input>
+                    <base-input label="Serial number" type="text" placeholder="Serial Number*" v-model="newDevice.dId"></base-input>
             </div>    
                  <div class="col-4">
                     <slot name="label"> 
-                        <label> Device type</label>
+                        <label> Dashboard</label>
                     </slot>
 
-                    <el-select value="1" placeholder="Select type*" style="width:100%">
-                        <el-option class="text-dark" value="Type 1" label="Type 1"></el-option>
-                        <el-option class="text-dark" value="Type 2" label="Type 2"></el-option>
-                        <el-option class="text-dark" value="Type 3" label="Type 3"></el-option>
+                    <el-select v-model="selectedIndexDashboard" placeholder="Select dashboard*" style="width:100%">
+                        <el-option v-for = "dashboard, index in dashboards" v-bind:key="dashboard.id" class="text-dark" :value= "index" :label= "dashboard.name"></el-option>
                     </el-select>
             </div>   
                    
             </div>
             <div class="row pull-right" >
                 <div class="col-12" >
-                    <base-button type="primary" class="mb-3" size="lg" >Add</base-button>   
+                    <base-button @click="createDevice()" type="primary" class="mb-3" size="lg" >Add</base-button>   
                 </div>
             </div>
         </card>
@@ -72,6 +70,7 @@
             </card>            
         </div>
         <Json :value="$store.state.devices"></Json>
+        <Json :value="dashboards"></Json>
     </div>
 </template>
 
@@ -92,49 +91,147 @@ export default{
     },
     data(){
         return{        
-
+            dashboards: [],
+            selectedIndexDashboard: null,
+            newDevice: {
+                name:"",
+                dId:"",
+                dashboardId:"",
+                dashboardname:""
+            }
         };
     },
     mounted(){
         this.$store.dispatch("getDevices");
+        this.getDashboards();
         },
 
     methods: {
-        deleteDevice(device) {
-        const axiosHeader = {
-            headers: {
-            token: this.$store.state.auth.token
-            },
-            params: {
-            dId: device.dId
+        createDevice(device) {
+            if(this.newDevice.name == ""){
+                    this.$notify({
+                    type: "warning",
+                    icon: "tim-icons icon-alert-circle-exc",
+                    message: "Device name is empty"
+                    }); 
+                    return;               
             }
-        };
-    this.$axios
-            .delete("/device", axiosHeader)
-            .then(res => {
-            if (res.data.status == "success") {
-                this.$notify({
-                type: "success",
-                icon: "tim-icons icon-check-2",
-                message: device.name + " deleted!"
+            if(this.newDevice.dId == ""){
+                    this.$notify({
+                    type: "warning",
+                    icon: "tim-icons icon-alert-circle-exc",
+                    message: "Device ID is empty"
+                    }); 
+                    return;                  
+            }
+            if(this.selectedIndexDashboard == null){
+                    this.$notify({
+                    type: "warning",
+                    icon: "tim-icons icon-alert-circle-exc",
+                    message: "Dashboard must be selected"
+                    }); 
+                    return;                  
+            }
+            const axiosHeader = {
+                headers: {
+                token: this.$store.state.auth.token
+                }
+            };
+            this.newDevice.dashboardId = this.dashboards[this.selectedIndexDashboard]._id;
+            this.newDevice.dashboardName = this.dashboards[this.selectedIndexDashboard].name;
+            const toSend = {
+                newDevice: this.newDevice
+            };
+            this.$axios
+                .post("/device", toSend, axiosHeader)
+                .then(res => {
+                    if(res.data.status == "success") {
+                    this.$store.dispatch("getDevices");
+                    this.newDevice.name="";
+                    this.newDevice.dId="";
+                    this.selectedIndexDashboard=null;
+                    this.$notify({
+                    type: "success",
+                    icon: "tim-icons icon-check-2",
+                    message: "Success! Device was added!"
+                    });
+                    return;
+                }               
+                })
+                .catch(e => {
+                if(e.response.data.status == "error" && e.response.data.error.errors.dId.kind == "unique"){
+                    this.$notify({
+                    type: "warning",
+                    icon: "tim-icons icon-alert-circle-exc",
+                    message: "The device si already resgistred"
+                    }); 
+                    return;                    
+                }
+                else{
+                    this.$showNotify("danger","Error");
+                    return;
+                }
                 });
-                this.$store.dispatch("getDevices");
-            }
-            
-            })
-            .catch(e => {
-            console.log(e);
-            this.$notify({
-                type: "danger",
-                icon: "tim-icons icon-alert-circle-exc",
-                message: " Error deleting " + device.name
-            });
+            },
+
+
+        deleteDevice(device) {
+            const axiosHeader = {
+                headers: {
+                token: this.$store.state.auth.token
+                },
+                params: {
+                dId: device.dId
+                }
+            };
+            this.$axios
+                .delete("/device", axiosHeader)
+                .then(res => {
+                if (res.data.status == "success") {
+                    this.$notify({
+                    type: "success",
+                    icon: "tim-icons icon-check-2",
+                    message: device.name + " deleted!"
+                    });
+                    this.$store.dispatch("getDevices");
+                }
+                
+                })
+                .catch(e => {
+                console.log(e);
+                this.$notify({
+                    type: "danger",
+                    icon: "tim-icons icon-alert-circle-exc",
+                    message: " Error deleting " + device.name
+                });
             });
 
         },
         updateSaveStatus(index){
             this.devices[index].saveStatus = !this.devices[index].saveStatus
-        }    
+        },
+    async getDashboards(){
+      const axiosHeader = {
+        headers: {
+          token: this.$store.state.auth.token
+        }
+      };
+      try {
+        const res = await this.$axios.get("/dashboard", axiosHeader);
+        console.log(res.data);
+        if (res.data.status == "success"){
+          this.dashboards = res.data.data;
+        }
+      } catch (error) {
+        this.$notify({
+          type: "danger",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: "Error getting dashboards"
+        });
+        console.log(error);
+        return;
+      }
+    }           
     }
 };
 </script>
