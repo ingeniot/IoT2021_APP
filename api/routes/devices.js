@@ -2,14 +2,22 @@
 const express = require("express");
 const router = express.Router();
 const {checkAuth} = require('../middlewares/authentication.js');
-import { reset } from 'colors';
+const axios = require("axios");
+
+    const auth = {
+        auth: {
+            username:'admin',
+            password:'emqxsecret'
+        }
+    }
+
 /********************
  *                  *
   Models          
  *                  *
  ********************/     
 import Device from '../models/device.js'
-
+import SaverRule from '../models/emqx_saver_rule.js'
 /********************
  *                  *
         API             
@@ -45,18 +53,19 @@ router.post("/device",checkAuth,async(req,res)=>{
         newDevice.userId = userId;
         newDevice.createdTime = Date.now();
         const device = await Device.create(newDevice);
-        selectDevice(userId,dId)
-        const toSend = {
+        await createSaverRule(userId, newDevice.dId, true);
+        await selectDevice(userId, newDevice.dId)
+        const response = {
             status:"success"
         }
-        return res.json(toSend);  
+        return res.json(response);  
     } catch (error) {
         console.log("Error creating new device" + error);
-        const toSend = {
+        const response = {
             status:"error",
             error: error
         }
-        return res.status(500).json(toSend);
+        return res.status(500).json(response);
 
     }
 
@@ -67,19 +76,30 @@ router.get("/device", checkAuth, async(req,res)=>{
     try {
         console.log(req.userData);  
         const userId = req.userData._id; 
-        const devices = await Device.find({userId: userId});
-        const toSend = {
+
+        var devices = await Device.find({userId: userId});  //devices no es  un arraoy de js, sino un array de mongoose
+        /**/ 
+        // newObject = Object.assign((),oldObject); //Alternativa mas formal de la linea siguiente
+        devices = JSON.parse(JSON.stringify(devices));
+
+        const saverRules = await getSaverRules(userId);
+
+        devices.forEach((device, index)=>{
+            devices[index].saverRule = saverRules.filter(saverRule => saverRule.dId == device.dId)[0];
+        });
+        /**/ 
+        const response = {
             status:"success",
             data: devices
         };
-        res.json(toSend);        
+        res.json(response);        
     } catch (error) {
-        console.log("Error geting devices");
-        const toSend = {
+        console.log("Error getting devices");
+        const response = {
             status: "error",
             error: error
         }; 
-    return res.status(500).json(toSend);
+    return res.status(500).json(response);
     }
 
 });
@@ -87,19 +107,20 @@ router.get("/device", checkAuth, async(req,res)=>{
 router.put("/device",checkAuth, (req,res)=>{
     const dId = req.body.dId;
     const userId = req.userData._id;
+   
     console.log(dId);
     if(selectDevice(userId,dId)){
-        const toSend = {
+        const response = {
             status:"success"
         };
-        res.json(toSend);  
+        res.json(response);  
     }
     else{
-        const toSend = {
+        const response = {
             status: "error",
             error: error
         }; 
-    return res.status(500).json(toSend);
+    return res.status(500).json(response);
 
     };
 
@@ -109,19 +130,23 @@ router.delete("/device",checkAuth,async(req,res)=>{
     try {
         const userId = req.userData._id;
         const dId = req.query.dId;
+
+        await deleteSaverRule(dId);
+
         const result = await Device.deleteOne({userId: userId, dId: dId});
-        const toSend = {
+
+        const response = {
             status:"success",
             data: result
         };
-        return res.json(toSend);        
+        return res.json(response);        
     } catch (error) {
         console.log("Error deleting device");
-        const toSend = {
+        const response = {
             status: "error",
             error: error,
         }; 
-        return res.status(500).json(toSend);       
+        return res.status(500).json(response);       
     }
 
 
@@ -132,6 +157,9 @@ router.delete("/device",checkAuth,async(req,res)=>{
         Functions             
  *                  *
  ********************/ 
+/*setTimeout(()=>{
+    createSaverRule("121212","11111111",false);
+},2000);*/
 async function selectDevice(userId, dId){
     try {
 
@@ -146,5 +174,71 @@ async function selectDevice(userId, dId){
 
 }
 
+//Saver rules managment functions
+async function createSaverRule(userId, dId, status){
+    try {
+    const url = "http://localhost:8085/api/v4/rules";
+    const topic = userId + "/" + dId + "/+/sdata";
 
+    const rawsql = "SELECT topic, payload FROM \"" + topic + "\" WHERE payload.save = 1";
+    var newRule = {
+        rawsql: rawsql,
+        actions: [
+            {
+                name:"data_to_webserver",
+                params: {
+                    $resource: global.saverResource.id,
+                    payload_tmpl: '{"userId":"' + userId + '","payload":${payload},"topic":"${topic}"}'
+                }
+            }
+        ],
+        description: "SAVER-RULE",
+        enabled: status
+    };
+    const res = await axios.post(url, newRule, auth);
+    if(res.status === 200 && res.data.data){
+        console.log(res.data.data);
+        await SaverRule.create({
+            userId: userId,
+            dId: dId,
+            emqxRuleId: res.data.data.id,
+            status: status
+        });
+        return true;
+    } else{
+        console.log("Call createSaverRule() fail");
+        return false;
+    }        
+    } catch (error) {
+        console.log("Error creating saver rule");
+        console.log(error);   
+        return false;   
+    }
+}
+
+async function getSaverRules(userId){
+    try {
+        const rules = await SaverRule.find({userId:userId});
+        return rules;
+    } catch (error) {
+        return false;
+        
+    }
+}
+
+async function deleteSaverRule(dId){
+    try {
+        const mongoRule = await SaverRule.findOne({dId: dId});
+        const url = "http://localhost:8085/api/v4/rules/" + mongoRule.emqxRuleId;  
+        const emqxRule = await axios.delete(url, auth);
+        const deleted = await saverRule.deleteOne({dId: dId});
+        return true;           
+    } catch (error) {
+        console.log("Error deleting saver rule");
+        console.log(error);   
+        return false;             
+    }
+ 
+
+}
 module.exports = router;

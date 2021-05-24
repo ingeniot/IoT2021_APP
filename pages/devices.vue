@@ -52,11 +52,11 @@
 
                     <el-table-column label="Actions">
                         <div slot-scope="{row, $index}">
-                            <el-tooltip content="Save status indicator">
-                                <i class="fas fa-database" :class="{'text-success' : row.saveStatus,'text-dark' : !row.saveStatus}"></i>
+                            <el-tooltip content="Saver status indicator">
+                                <i class="fas fa-database" :class="{'text-success' : row.saverRule.status,'text-dark' : !row.saverRule.status}"></i>
                             </el-tooltip>
                             <el-tooltip content="Save Data">
-                                <base-switch @click="updateSaveStatus($index)" :value= "row.saveStatus" type="primary" on-text="on" off-text="off" ></base-switch>
+                                <base-switch @click="updateSaverRuleStatus(row.saverRule)" :value= "row.saverRule.status" type="primary" on-text="on" off-text="off" ></base-switch>
                             </el-tooltip>
                             <el-tooltip content="Delete" effect="light" :open:delay="300" placement="top">
                             <base-button type="danger" icon size="small" class="btn-link" @click="deleteDevice(row)">
@@ -207,31 +207,66 @@ export default{
             });
 
         },
-        updateSaveStatus(index){
-            this.devices[index].saveStatus = !this.devices[index].saveStatus
+
+        updateSaverRuleStatus(saverRule){
+            var saverRuleTemp = JSON.parse(JSON.stringify(saverRule));
+            console.log("status"+saverRuleTemp.status);
+            saverRuleTemp.status = !saverRuleTemp.status;
+            console.log("status"+saverRuleTemp.status);
+            const toSend = {
+                saverRule: saverRuleTemp
+            };
+            const axiosHeader = {
+                headers: {
+                    token: this.$store.state.auth.token
+                }
+            }
+            this.$axios.put("/saver-rule", toSend, axiosHeader)
+            .then(res=>{
+                if(res.data.status == 'success'){
+                    this.$store.dispatch("getDevices");
+                    console.log("paso por success");
+                    this.$notify({
+                    type: "success",
+                    icon: "tim-icons icon-check-2",
+                    message:  "Device saver status updated!"
+                    });     
+                }
+                return;
+            })
+            .catch(e =>{
+                console.log(e);
+                    this.$notify({
+                    type: "danger",
+                    icon: "tim-icons icon-alert-circle-exc",
+                    message: "Error updating saver rule" 
+                    });
+                    return;
+            });
         },
-    async getDashboards(){
-      const axiosHeader = {
-        headers: {
-          token: this.$store.state.auth.token
-        }
-      };
-      try {
-        const res = await this.$axios.get("/dashboard", axiosHeader);
-        console.log(res.data);
-        if (res.data.status == "success"){
-          this.dashboards = res.data.data;
-        }
-      } catch (error) {
-        this.$notify({
-          type: "danger",
-          icon: "tim-icons icon-alert-circle-exc",
-          message: "Error getting dashboards"
-        });
-        console.log(error);
-        return;
-      }
-    }           
+
+        async getDashboards(){
+            const axiosHeader = {
+                headers: {
+                token: this.$store.state.auth.token
+                }
+            };
+            try {
+                const res = await this.$axios.get("/dashboard", axiosHeader);
+                console.log(res.data);
+                if (res.data.status == "success"){
+                this.dashboards = res.data.data;
+                }
+            } catch (error) {
+                this.$notify({
+                type: "danger",
+                icon: "tim-icons icon-alert-circle-exc",
+                message: "Error getting dashboards"
+                });
+                console.log(error);
+                return;
+            }
+        }           
     }
 };
 </script>

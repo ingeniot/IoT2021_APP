@@ -22,6 +22,11 @@ module.exports = app;
 //express routes
 app.use('/api',require('./routes/devices.js'));
 app.use('/api',require('./routes/users.js'));
+app.use('/api',require('./routes/dashboards.js'));
+app.use('/api',require('./routes/webhooks.js'));
+app.use('/api',require('./routes/emqxapi.js'));
+app.use('/api',require('./routes/saver-rules.js'));
+
 //listener
 
 app.listen(3001, () => {
