@@ -26,6 +26,7 @@ app.use('/api',require('./routes/dashboards.js'));
 app.use('/api',require('./routes/webhooks.js'));
 app.use('/api',require('./routes/emqxapi.js'));
 app.use('/api',require('./routes/saver-rules.js'));
+app.use('/api',require('./routes/rules.js'));
 
 //listener
 

@@ -69,7 +69,11 @@
                </el-table>
             </card>            
         </div>
-        <Json :value="$store.state.devices"></Json>
+        <h3>Selected device</h3>
+        <Json :value="$store.state.selectedDevice"></Json>        
+                <h3>Devices</h3>
+        <Json  :value="$store.state.devices"></Json>
+                <h3>Dashboards</h3>
         <Json :value="dashboards"></Json>
     </div>
 </template>
@@ -102,7 +106,6 @@ export default{
         };
     },
     mounted(){
-        this.$store.dispatch("getDevices");
         this.getDashboards();
         },
 

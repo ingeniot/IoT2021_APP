@@ -4,12 +4,12 @@ const router = express.Router();
 const {checkAuth} = require('../middlewares/authentication.js');
 const axios = require("axios");
 
-    const auth = {
-        auth: {
-            username:'admin',
-            password:'emqxsecret'
-        }
+const auth = {
+    auth: {
+        username:'admin',
+        password:'emqxsecret'
     }
+}
 
 /********************
  *                  *
@@ -18,6 +18,9 @@ const axios = require("axios");
  ********************/     
 import Device from '../models/device.js'
 import SaverRule from '../models/emqx_saver_rule.js'
+import Dashboard from '../models/dashboard.js'
+import AlarmRule from '../models/emqx_alarm_rule.js'
+
 /********************
  *                  *
         API             
@@ -38,8 +41,8 @@ router.get("/devices", (req, res) => {
         "userId":"aaaa",
         "dId":"12121212",
         "name":"home",
-        "templateName":"esp32 template",
-        "templateId":"aaaa"
+        "dashboardName":"esp32 dashboard",
+        "dashboardId":"aaaa"
     }
 } 
 */
@@ -52,8 +55,9 @@ router.post("/device",checkAuth,async(req,res)=>{
         console.log(newDevice);
         newDevice.userId = userId;
         newDevice.createdTime = Date.now();
-        const device = await Device.create(newDevice);
+
         await createSaverRule(userId, newDevice.dId, true);
+        const device = await Device.create(newDevice);
         await selectDevice(userId, newDevice.dId)
         const response = {
             status:"success"
@@ -83,9 +87,15 @@ router.get("/device", checkAuth, async(req,res)=>{
         devices = JSON.parse(JSON.stringify(devices));
 
         const saverRules = await getSaverRules(userId);
+        const dashboards = await getDashboards(userId);        
+        const alarmRules = await getAlarmRules(userId);
+        //saver-rules, dashboards and alarms to device
+        /*devices*/
 
         devices.forEach((device, index)=>{
             devices[index].saverRule = saverRules.filter(saverRule => saverRule.dId == device.dId)[0];
+            devices[index].dashboard = dashboards.filter(dashboard => dashboard._id == device.dashboardId)[0];
+            devices[index].alarmRules = alarmRules.filter(alarmRule => alarmRule.dId == device.dId);
         });
         /**/ 
         const response = {
@@ -104,12 +114,13 @@ router.get("/device", checkAuth, async(req,res)=>{
 
 });
 //Update
-router.put("/device",checkAuth, (req,res)=>{
+router.put("/device",checkAuth, async (req,res)=>{
     const dId = req.body.dId;
     const userId = req.userData._id;
    
     console.log(dId);
-    if(selectDevice(userId,dId)){
+    const deviceSelected = await selectDevice(userId,dId);
+    if(deviceSelected){
         const response = {
             status:"success"
         };
@@ -165,6 +176,7 @@ async function selectDevice(userId, dId){
 
         const result = await Device.updateMany({userId: userId},{selected: false});
         const result2 = await Device.updateOne({dId: dId, userId: userId},{selected: true}); 
+
         console.log(dId); 
         return true;
     } catch (error) {
@@ -172,11 +184,12 @@ async function selectDevice(userId, dId){
         return false
     }
 
-}
+};
 
 //Saver rules managment functions
 async function createSaverRule(userId, dId, status){
     try {
+
     const url = "http://localhost:8085/api/v4/rules";
     const topic = userId + "/" + dId + "/+/sdata";
 
@@ -196,12 +209,15 @@ async function createSaverRule(userId, dId, status){
         enabled: status
     };
     const res = await axios.post(url, newRule, auth);
+    var emqxRuleId = res.data.data.id;
     if(res.status === 200 && res.data.data){
+        console.log("status ok. Crear regla");
         console.log(res.data.data);
+
         await SaverRule.create({
             userId: userId,
             dId: dId,
-            emqxRuleId: res.data.data.id,
+            emqxRuleId: emqxRuleId,
             status: status
         });
         return true;
@@ -226,19 +242,38 @@ async function getSaverRules(userId){
     }
 }
 
+async function getAlarmRules(userId){
+    try {
+        const rules = await AlarmRule.find({userId:userId});
+        return rules;
+    } catch (error) {
+        return false;
+        
+    }
+}
+
 async function deleteSaverRule(dId){
     try {
         const mongoRule = await SaverRule.findOne({dId: dId});
         const url = "http://localhost:8085/api/v4/rules/" + mongoRule.emqxRuleId;  
         const emqxRule = await axios.delete(url, auth);
-        const deleted = await saverRule.deleteOne({dId: dId});
+        const deleted = await SaverRule.deleteOne({dId: dId});
         return true;           
     } catch (error) {
         console.log("Error deleting saver rule");
         console.log(error);   
         return false;             
     }
- 
-
 }
+
+async function getDashboards(userId){
+    try {
+        const dashboards = await Dashboard.find({userId:userId});
+        return dashboards;
+    } catch (error) {
+        return false;
+        
+    }
+}
+
 module.exports = router;
