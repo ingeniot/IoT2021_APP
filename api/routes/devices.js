@@ -55,6 +55,7 @@ router.post("/device",checkAuth,async(req,res)=>{
         console.log(newDevice);
         newDevice.userId = userId;
         newDevice.createdTime = Date.now();
+        newDevice.password = createId(10);
 
         await createSaverRule(userId, newDevice.dId, true);
         const device = await Device.create(newDevice);
@@ -275,5 +276,13 @@ async function getDashboards(userId){
         
     }
 }
-
+function createId(length){
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefeghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0;i < length; i++){
+        result += characters.charAt(Math.floor(Math.random()*charactersLength));
+    }
+    return result;
+}
 module.exports = router;

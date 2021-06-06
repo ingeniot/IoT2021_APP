@@ -22,7 +22,7 @@
     <ul class="navbar-nav" :class="$rtl.isRTL ? 'mr-auto' : 'ml-auto'">
 
       <el-select class="select-success ml-xl-10" placeholder="Select device" @change= "selectDevice()" v-model= "selectedDevice">
-        <el-option v-for= "device, index in $store.state.devices" :value= "index" :label= "device.name" :key="device._id"></el-option>        
+        <el-option v-for= "device, index in $store.state.devices"  :value= "index" :label= "device.name" :key="device._id"></el-option>        
       </el-select>
 
       <div class="search-bar input-group" @click="searchModalVisible = true">
@@ -67,7 +67,7 @@
           <p class="d-lg-none">New Notifications</p>
         </template>
 
-        <li @click="readedNotification(notification._id)" v-for = "notification in $store.state.notifications"class="nav-link">
+        <li @click="readedNotification(notification._id)" v-for = "notification in $store.state.notifications" class="nav-link" :key= "notification._id">
           <a href="#" class="nav-item dropdown-item">
             <b style = "color:orangered">{{unixToDate(notification.createdTime)}}</b>
             <div style = "margin-left:50px">
@@ -148,7 +148,7 @@ export default {
   mounted(){
     this.$store.dispatch("getDevices");
     this.$nuxt.$on('selectedDeviceIndex', this.updateSelectedDeviceIndex);
-    this.$store.dispatch("getNotifications");
+
     },
   methods: {
     capitalizeFirstLetter(string) {

@@ -52,7 +52,7 @@
                 </div>
                 <el-table v-if= "$store.state.selectedDevice.alarmRules.length >0" :data= "$store.state.selectedDevice.alarmRules"> 
                    <el-table-column min-with="50" label="#" align="center">
-                        <div class="photo" slot-scope="{row,$index}">
+                        <div class="photo" slot-scope="{$index}">
                             {{$index+1}}
                         </div>
                     </el-table-column>
@@ -63,7 +63,7 @@
                     <el-table-column prop="triggerTime" label="Trigger time"></el-table-column>
                     <el-table-column prop="counter" label="Matches"></el-table-column>
                     <el-table-column header-align="right" align="rigth" label="Actions">
-                       <div slot-scope="{row,$index}" class="text-right table-actions">
+                       <div slot-scope="{row}" class="text-right table-actions">
                             <el-tooltip content="Delete" effect="light" placement="top">
                                 <base-button @click="deleteRule(row)" type="danger" icon size="sm" class="btn-link">
                                 <i class="tim-icons icon-simple-remove"></i>

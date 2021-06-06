@@ -12,7 +12,8 @@ import Data from '../models/data.js';
 import Device from '../models/device.js';
 import AlarmRule from '../models/emqx_alarm_rule.js';
 import Notification from '../models/notification.js';
-
+import Dashboard from '../models/dashboard.js';
+import EmqxAuthRule from '../models/emqx_auth.js';
 //Global variables
 var client;
 
@@ -25,9 +26,43 @@ setTimeout(() => {
 
  /********************
  *                  *
-      Endpoints         
+      API         
  *                  *
  ********************/  
+var deviceConfig = {
+    username: 'sgrsdgadsg',
+    password: 'fwerff423f',
+    topic: "gwergewrgewrgergeqr/ferfqe/",
+    variables:[
+        {
+            variable: '5t4es4r35r',
+            variableFullName: 'Temperature',
+            variableType: 'input',
+            variablePeriod: 10,
+        },
+        {
+            variable: '5t4esds35r',
+            variableFullName: 'Humidity',
+            variableType: 'output',
+            variablePeriod: 20,
+        },
+        {
+            variable: '5t4es4rd5r',
+            variableFullName: 'Pump',
+            variableType: 'output',
+            variablePeriod: undefined,
+        },
+        {
+            variable: '5t4es4r35d',
+            variableFullName: 'Fan',
+            variableType: 'input',
+            variablePeriod: undefined,
+        }
+
+    ]
+
+}
+
 router.post('/saver-webhook', async(req,res)=>{
    // console.log(req);
     try {
@@ -107,6 +142,7 @@ router.post('/alarm-webhook', async(req,res)=>{
  
  }); 
 
+ // get new notification from EMQX
 router.get("/notifications", checkAuth, async(req, res)=>{
 try {
     const userId = req.userData._id;
@@ -128,6 +164,8 @@ try {
     
 }
  });
+
+ //Update notification (readed status) from FRONTEND
  router.put("/notifications", checkAuth, async(req, res)=>{
     try {
         const userId = req.userData._id;
@@ -148,6 +186,45 @@ try {
         
     }
      });
+
+// Create device configuration webhook
+router.post("/getDeviceConfig", async(req,res)=>{
+    console.log(req.body);
+    const dId = req.body.dId;
+    const password = req.body.password;
+    const device = await Device.findOne({dId : dId});
+    if(!password == device.password){
+        return res.status(401).json();
+    };
+
+    const userId = device.userId;
+    var mqttAuth = await createMqttAuth(dId,userId);
+    var dashboard = await Dashboard.findOne({_id: device.dashboardId});
+    console.log(dashboard);
+    var variables = [];
+    dashboard.widgets.forEach(widget=>{
+        var aux = (({variable, variableFullName, variableType, variablePeriod})=>({
+            variable, variableFullName, variableType, variablePeriod}))(widget);
+        variables.push(aux);
+    });
+    const response = {
+        username: mqttAuth.username,
+        password: mqttAuth.password,
+        topic: userId + "/" + dId +  "/",
+        variables: variables
+    };
+    console.log(response);
+    res.json(response);
+    setTimeout(() => {
+        createMqttAuth(dId, userId);
+        console.log("Device credentials updated");
+        
+    },60000);
+
+
+});
+
+
  /********************
  *                  *
       Functions         
@@ -218,5 +295,49 @@ async function getNotifications(userId){
         return false;        
     }
 }
-
+// Type auth: 'user', 'device', 'superuser'
+async function createMqttAuth(dId,userId){
+    try {
+        var rule = await EmqxAuthRule.find({type: "device", userId: userId, dId: dId});
+        if(rule.length == 0){
+            const newRule = {
+                userId: userId,
+                username: createId(10),
+                password: createId(10),
+                publish: [userId+"/"+dId+"/+/sdata"],     
+                subscribe: [userId+"/"+dId+"/+/actdata"],
+                type: "device",
+                createdTime: Date.now(),
+                updatedTime: Date.now()
+            }
+            const result = await EmqxAuthRule.create(newRule);
+            const response = {
+                username: result.username,
+                password: result.password
+            }
+            console.log("Respuesta funcion create->"+response.username);
+            console.log("Respuesta funcion create->"+response.password);
+            return response;
+        }
+        const newUserName = createId(10);
+        const newPassword = createId(10);
+        const result = await EmqxAuthRule.updateOne({type: "device",dId: dId},
+        {$set: {username: newUserName, password: newPassword, updatedTime: Date.now()}}
+        );  // result { n:1 , nModified:1, ok:1}  (modificó un registro)
+        if(result.n == 1 && result.ok == 1){
+            const response = {
+                username: newUserName,
+                password: newPassword
+            };
+            console.log("Respuesta funcion update->"+response.username);
+            console.log("Respuesta funcion update->"+response.password);
+            return response;
+        } else {
+            return false
+        }        
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+} 
 module.exports = router;

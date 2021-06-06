@@ -1,9 +1,7 @@
 <template>
-
     <card>
-
-        <template slot="header">
-           
+        <template slot="header">  
+       
             <h5 class="card-category"> {{ config.selectedDevice.name }} - {{ config.variableFullName }}</h5>
 
             <h3 class="card-title">

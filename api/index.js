@@ -27,7 +27,7 @@ app.use('/api',require('./routes/webhooks.js'));
 app.use('/api',require('./routes/emqxapi.js'));
 app.use('/api',require('./routes/saver-rules.js'));
 app.use('/api',require('./routes/rules.js'));
-
+app.use('/api',require('./routes/dataprovider.js'));
 //listener
 
 app.listen(3001, () => {

@@ -4,7 +4,7 @@
     <div class="row">
       <card>
         <div slot="header">
-          <h4 class="card-title">Widgets</h4>
+          <h4 class="card-title">Create new dasboard</h4>
         </div>
 
         <div class="row">
@@ -286,28 +286,28 @@
             <!-- FORM BUTTON TYPE -->
             <div v-if="widgetType == 'button'">
               <base-input
-                v-model="configButton.variableFullName"
+                v-model="buttonConfig.variableFullName"
                 label="Var Name"
                 type="text"
               >
               </base-input>
 
               <base-input
-                v-model="configButton.message"
+                v-model="buttonConfig.message"
                 label="Message to send"
                 type="text"
               >
               </base-input>
 
               <base-input
-                v-model="configButton.text"
+                v-model="buttonConfig.text"
                 label="Button Text"
                 type="text"
               >
               </base-input>
 
               <base-input
-                v-model="configButton.icon"
+                v-model="buttonConfig.icon"
                 label="Icon"
                 type="text"
               ></base-input>
@@ -315,7 +315,7 @@
               <br />
 
               <el-select
-                v-model="configButton.class"
+                v-model="buttonConfig.class"
                 class="select-success"
                 placeholder="Select Class"
                 style="width: 100%;"
@@ -345,7 +345,7 @@
               <br /><br /><br />
 
               <el-select
-                v-model="configButton.column"
+                v-model="buttonConfig.column"
                 class="select-success"
                 placeholder="Select Column Width"
                 style="width: 100%;"
@@ -526,12 +526,12 @@
             ></Iotswitch>
             <Iotbutton
               v-if="widgetType == 'button'"
-              :config="configButton"
+              :config="buttonConfig"
             ></Iotbutton>
             <Iotindicator
               v-if="widgetType == 'indicator'"
               :config="iotIndicatorConfig"
-            ></Iotindicator>
+              ></Iotindicator>
           </div>
         </div>
 
@@ -643,7 +643,7 @@
         <div class="row">
           <el-table :data="dashboards">
             <el-table-column min-width="50" label="#" align="center">
-              <div class="photo" slot-scope="{ row, $index }">
+              <div class="photo" slot-scope="{ $index }">
                 {{ $index + 1 }}
               </div>
             </el-table-column>
@@ -662,7 +662,7 @@
 
             <el-table-column header-align="right" align="right" label="Actions">
               <div
-                slot-scope="{ row, $index }"
+                slot-scope="{ row }"
                 class="text-right table-actions"
               >
                 <el-tooltip
@@ -689,7 +689,9 @@
     </div>
 
     <!-- JSONS -->
+<h4>Widgets</h4>
     <Json :value="widgets"></Json>
+    <h4>Widgets</h4>
     <Json :value="dashboards"></Json>    
   </div>
 </template>
@@ -720,6 +722,8 @@ export default {
         },
         variableFullName: "temperature",
         variable: "varname",
+        variableType: "input",
+        variablePeriod: "30",
         unit: "Watts",
         class: "success",
         column: "col-12",
@@ -737,21 +741,23 @@ export default {
         },
         variableFullName: "Luz",
         variable: "varname",
+        variableType: "output",
         class: "danger",
         widget: "switch",
         icon: "fa-bath",
         column: "col-6"
       },
-      configButton: {
+      buttonConfig: {
         userId: "userid",
         selectedDevice: {
           name: "Home",
           dId: "8888"
         },
         variableFullName: "temperature",
+        variable: "varname",
+        variableType: "output",
         text: "send",
         message: "testing123",
-        variable: "varname",
         widget: "button",
         icon: "fa-bath",
         column: "col-6"
@@ -764,44 +770,15 @@ export default {
         },
         variableFullName: "temperature",
         variable: "varname",
+        variableType: "input",
+        variablePeriod: "30",
         class: "success",
         widget: "indicator",
         icon: "fa-bath",
         column: "col-6"
       },
-      configButton: {
-        userId: "userid",
-        selectedDevice: {
-          name: "Home",
-          dId: "8888",
-          dashboardName: "Power Sensor",
-          dashboardId: "984237562348756ldksjfh",
-          saverRule: false
-        },
-        variableFullName: "Pump",
-        variable: "var1",
-        icon: "fa-sun",
-        column: "col-4",
-        widget: "indicator",
-        class: "danger",
-        message: "{'fanstatus': 'stop'}"
-      },
-      configIndicator: {
-        userId: "userid",
-        selectedDevice: {
-          name: "Home",
-          dId: "8888",
-          dashboardName: "Power Sensor",
-          dashboardId: "984237562348756ldksjfh",
-          saverRule: false
-        },
-        variableFullName: "Pump",
-        variable: "var1",
-        icon: "fa-sun",
-        column: "col-6",
-        widget: "indicator",
-        class: "success"
-      }
+
+
     };
   },
 
@@ -820,12 +797,12 @@ export default {
         this.widgets.push(JSON.parse(JSON.stringify(this.iotSwitchConfig)));
       }
       if (this.widgetType == "button") {
-        this.configButton.variable = this.makeid(10);
-        this.widgets.push(JSON.parse(JSON.stringify(this.configButton)));
+        this.buttonConfig.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.buttonConfig)));
       }
       if (this.widgetType == "indicator") {
-        this.configIndicator.variable = this.makeid(10);
-        this.widgets.push(JSON.parse(JSON.stringify(this.configIndicator)));
+        this.iotIndicatorConfig.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.iotIndicatorConfig)));
       }
     },
     deleteWidget(index) {
@@ -855,7 +832,7 @@ export default {
         dashboard: {
           name: this.dashboardName,
           description: this.dashboardDescription,
-          widgets: this.widgets
+          widgets: this.widgets,
         }
       }
 

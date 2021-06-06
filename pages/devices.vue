@@ -41,19 +41,20 @@
 
                <el-table :data="$store.state.devices">
                     <el-table-column label="#" min-width="50" allign="center">
-                        <div slot-scope="{row, $index}">
+                        <div slot-scope="{$index}">
                             {{$index+1}}
                         </div>
                     </el-table-column>
 
                     <el-table-column label="Name" prop="name"></el-table-column>
                     <el-table-column label="Device ID"  prop="dId"></el-table-column>
+                    <el-table-column label="Password"  prop="password"></el-table-column>
                     <el-table-column label="Device Type"  prop="templateName"></el-table-column>
 
                     <el-table-column label="Actions">
-                        <div slot-scope="{row, $index}">
+                        <div slot-scope="{row}">
                             <el-tooltip content="Saver status indicator">
-                                <i class="fas fa-database" :class="{'text-success' : row.saverRule.status,'text-dark' : !row.saverRule.status}"></i>
+                                <i class="fas fa-database" :class="{'text-success': row.saverRule.status,'text-dark': !row.saverRule.status}"></i>
                             </el-tooltip>
                             <el-tooltip content="Save Data">
                                 <base-switch @click="updateSaverRuleStatus(row.saverRule)" :value= "row.saverRule.status" type="primary" on-text="on" off-text="off" ></base-switch>

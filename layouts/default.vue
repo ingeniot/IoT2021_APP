@@ -7,7 +7,8 @@
       short-title="IOT"
       title="IngenIoT"
     >
-      <template slot-scope="props" slot="links">
+<!--      <template slot-scope="props" slot="links">
+-->      <template  slot="links">
         <sidebar-item
           :link="{
             name: 'Home',
@@ -113,6 +114,7 @@
   import PerfectScrollbar from 'perfect-scrollbar';
   import 'perfect-scrollbar/css/perfect-scrollbar.css';
   import SidebarShare from '@/components/Layout/SidebarSharePlugin';
+  
   function hasElement(className) {
     return document.getElementsByClassName(className).length > 0;
   }
@@ -132,7 +134,8 @@
   import ContentFooter from '@/components/Layout/ContentFooter.vue';
   import DashboardContent from '@/components/Layout/Content.vue';
   import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions';
-
+  import mqtt from 'mqtt';
+  
   export default {
     components: {
       DashboardNavbar,
@@ -142,10 +145,34 @@
       ZoomCenterTransition,
       SidebarShare
     },
+
     data() {
       return {
-        sidebarBackground: 'vue' //vue|blue|orange|green|red|primary
+        sidebarBackground: 'vue', //vue|blue|orange|green|red|primary
+        client: null,
+        options: {
+          host:'localhost',
+          port: 8083,
+          endpoint: '/mqtt',
+          clientId:"web_" + this.$store.state.auth.userData.name + "_" + Math.floor(Math.random()*1000000+1),
+          username: null,
+          password: null,
+          connectTimeOut: 5000,
+          reconnectPeriod: 5000,
+          //protocolId:'MQIsdp',
+          //protocolVersion: 3,
+          clean: true,
+          //encoding: 'utf8'
+        }  
       };
+    },
+      mounted() {
+      this.$store.dispatch("getNotifications");
+      this.initScrollbar();
+      setTimeout(() => {
+            this.startMqttClient(); 
+      }, 2000);
+
     },
     computed: {
       isFullScreenRoute() {
@@ -171,11 +198,130 @@
         } else {
           docClasses.add('perfect-scrollbar-off');
         }
+      },
+      //Added methods
+      //mqtt methods
+      async startMqttClient(){
+        await this.createMqttAuth();
+        //topic struct  userId/dId/variableId/sdata
+        const deviceSubscribeTopic = this.$store.state.auth.userData._id + "/+/+/sdata";
+        const notifSubscribeTopic = this.$store.state.auth.userData._id + "/+/+/notif";     
+        const connectUrl = "ws://" + this.options.host + ":" + this.options.port + this.options.endpoint;
+        try {
+          this.client = mqtt.connect(connectUrl,this.options);       
+        } catch (error) {
+          console.log(error);
+        }
+        this.client.on('connect',()=>{
+          console.log('Conection successfull!');
+          this.client.subscribe(deviceSubscribeTopic, {qos:0}, (error)=>{
+            if(error){
+              console.log("Error in device subscription");
+              return;
+            }
+            console.log("Device subscription success!");
+            console.log(deviceSubscribeTopic);
+          });
+          this.client.subscribe(notifSubscribeTopic, {qos:0}, (error)=>{
+            if(error){
+              console.log("Error in notif subscription");
+              return;
+            }
+            console.log("Notif subscription success!");
+            console.log(notifSubscribeTopic);
+          });
+        });
+        this.client.on('error', error =>{
+          console.log('Conection fails',error);
+        });
+        this.client.on('reconnect', (error) =>{
+          console.log('Reconnecting',error);
+          this.getMqttAuth();
+        }); 
+        this.client.on('offline', (error) =>{
+          console.log('The client is offline',error);
+        });    
+
+        this.client.on("message",(topic,message)=>{
+          console.log("Message MQTT from "+topic+" -->");
+          console.log(message.toString());
+          try {
+            const splittedTopic = topic.split("/");        
+            const msgType = splittedTopic[3];
+            if(msgType == "notif"){
+              this.$notify({
+                type: 'danger',
+                icon: 'tim-icons icon-alert-circle-exc',
+                message: message.toString()
+              });
+              this.$store.dispatch("getNotifications");
+              return;
+              
+            } else if(msgType == "sdata"){
+              $nuxt.$emit(topic,JSON.parse(message.toString()));
+              return;
+            }
+          } 
+          catch (error) {
+          console.log(error);
+          }
+        });
+                
+        $nuxt.$on('mqtt-sender',(toSend)=>{
+          this.client.publish(toSend.topic,JSON.stringify(toSend.msg));
+        });
+      },       
+      async createMqttAuth(){ //getMqttCredentials()
+        try {
+          const axiosHeader = {
+            headers:{
+              token: this.$store.state.auth.token
+            }
+          };
+          const mqttAuth = await this.$axios.post("/mqttauth", null, axiosHeader); 
+          console.log(mqttAuth.data);   
+          if(mqttAuth.data.status == "success"){
+            console.log("********mqtt auth success!********");
+            this.options.username = mqttAuth.data.username,
+            this.options.password = mqttAuth.data.password
+            console.log("username===>"+this.options.username);
+            console.log("password===>"+this.options.password);            
+          }    
+          else{
+            console.log("Error getting mqtt user auth");
+          } 
+        } catch (error) {
+          console.log(error);
+        };
+
+      },
+     async getMqttAuth(){ //getMqttCredentialsForReconnection() 
+        try {
+          const axiosHeader = {
+            headers:{
+              token: this.$store.state.auth.token
+            }
+          };
+          const mqttAuth = await this.$axios.post("/mqttauthget", null, axiosHeader); 
+          console.log(mqttAuth.data);   
+          if(mqttAuth.data.status == "success"){
+            console.log("********mqtt auth reconnect success!********");
+            this.client.options.username = mqttAuth.data.username;
+            this.client.options.password = mqttAuth.data.password;
+            console.log("username===>"+this.options.username);
+            console.log("password===>"+this.options.password);            
+          }    
+          else{
+            console.log("Error getting mqtt user auth");
+          } 
+        } catch (error) {
+          console.log(error);
+        };
+
       }
-    },
-    mounted() {
-      this.initScrollbar();
+
     }
+
   };
 </script>
 <style lang="scss">

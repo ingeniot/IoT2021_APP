@@ -12,10 +12,7 @@
         <slot name="off"> {{ offText }} </slot>
       </span>
     </div>
-  <pre>
-    {{devices}}
-  </pre>
-  </div>
+</div>
 </template>
 <script>
 export default {

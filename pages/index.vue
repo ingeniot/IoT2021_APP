@@ -201,6 +201,7 @@ let bigChartDatasetOptions = {
 
 export default {
   name: 'dashboard',
+  middleware: "authenticated",
   components: {
     LineChart,
     BarChart,
@@ -338,6 +339,10 @@ export default {
       }
     };
   },
+    mounted () {
+      $nuxt.$router.push("/dashboard");
+    this.initBigChart(0);
+  },
   computed: {
     enableRTL () {
       return this.$route.query.enableRTL;
@@ -365,10 +370,8 @@ export default {
       this.bigLineChart.chartData = chartData;
       this.bigLineChart.activeIndex = index;
     }
-  },
-  mounted () {
-    this.initBigChart(0);
   }
+
 }
 </script>
 <style></style>

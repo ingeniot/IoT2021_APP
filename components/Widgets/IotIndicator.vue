@@ -1,7 +1,7 @@
 <template>
   <card>
     <div slot="header">
-      <h4 class="card-title">
+      <h4 class="card-category">
         {{ config.selectedDevice.name }} - {{ config.variableFullName }}
       </h4>
     </div>
@@ -16,10 +16,11 @@
 
 <script>
 export default {
+  name: 'iotindicator',
   props: ['config'],
   data() {
     return {
-      value: false
+      value: true
     };
   },
   mounted(){
@@ -60,4 +61,3 @@ export default {
 </script>
 
 
-/// Formato topicos /userId/dId/temperature/data

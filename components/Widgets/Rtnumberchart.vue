@@ -120,8 +120,9 @@
             }
         },
         mounted() {
-            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + this.config.variable + "/sdata", this.procesReceivedData);
+            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + this.config.variable + "/sdata", this.processReceivedData);
             this.getNow();
+            console.log("ejecutando mounted en el chart");
             this.getChartData();
             this.updateColorClass();
         },
@@ -152,28 +153,30 @@
                     this.isMounted = true;
                     return;
                 }
-                const axiosHeaders = {
+                const axiosHeader = {
                     headers: {
-                        token: $nuxt.$store.state.auth.accessToken,
+                        token: $nuxt.$store.state.auth.token,
                     },
                     params: { dId: this.config.selectedDevice.dId, variable: this.config.variable, chartTimeAgo: this.config.chartTimeAgo }
                 }
-                this.$axios.get("/get-small-charts-data", axiosHeaders)
-                    .then(res => {
-                        
+                console.log("va a llamar a la API de CHART");
+                this.$axios.get("/get-small-charts-data", axiosHeader)
+                    .then(res => {                        
                         const data = res.data.data;
-                        console.log(res.data)
                         data.forEach(element => {
+                           // console.log("element.value"+element.value);
                             var aux = []
-                            aux.push(element.time + (new Date().getTimezoneOffset() * 60 * 1000 * -1));
+                            aux.push(element.createdTime + (new Date().getTimezoneOffset() * 60 * 1000 * -1));
                             aux.push(element.value);
                             this.chartOptions.series[0].data.push(aux);
                         });
+                        console.log("primer dato time "+this.chartOptions.series[0].data[0].[0]);
+                        console.log("primer dato value"+this.chartOptions.series[0].data[0].[1]);
                         this.isMounted = true;
                         return;
                     })
                     .catch(e => {
-                        console.log(e)
+                        console.log("error llamada a API CHART "+e);
                         return;
                     });
             },
@@ -191,9 +194,16 @@
                     return "text-danger";
                 }
             },
-            procesReceivedData(data) {
+            processReceivedData(data) {
                 this.time = Date.now();
                 this.value = data.value;
+                setTimeout(() => {
+                    if(data.save){
+                        console.log("precesando datos");
+                        this.getChartData(); 
+                    }
+
+                }, 1000);
             },
             getNow() {
                 this.nowTime = Date.now();
