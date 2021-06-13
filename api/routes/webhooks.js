@@ -193,7 +193,10 @@ router.post("/getDeviceConfig", async(req,res)=>{
     const dId = req.body.dId;
     const password = req.body.password;
     const device = await Device.findOne({dId : dId});
+    console.log("device.password->" + device.password);
+    console.log("password->" + password);    
     if(!password == device.password){
+
         return res.status(401).json();
     };
 
@@ -340,4 +343,13 @@ async function createMqttAuth(dId,userId){
         return false;
     }
 } 
+function createId(length){
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefeghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0;i < length; i++){
+        result += characters.charAt(Math.floor(Math.random()*charactersLength));
+    }
+    return result;
+}
 module.exports = router;

@@ -84,6 +84,13 @@
 
               <br />
 
+              <base-input
+                v-model.number="ncConfig.variablePeriod"
+                label="Device variable sending period"
+                type="number"
+              ></base-input>
+
+              <br />
               <el-select
                 v-model="ncConfig.class"
                 class="select-success"
@@ -422,6 +429,14 @@
 
               <br />
 
+              <base-input
+                v-model.number="iotIndicatorConfig.variablePeriod"
+                label="Device variable sending period"
+                type="number"
+              ></base-input>
+
+              <br />
+
               <el-select
                 v-model="iotIndicatorConfig.class"
                 class="select-success"
@@ -742,6 +757,7 @@ export default {
         variableFullName: "Luz",
         variable: "varname",
         variableType: "output",
+        variablePeriod: "",
         class: "danger",
         widget: "switch",
         icon: "fa-bath",
@@ -756,6 +772,7 @@ export default {
         variableFullName: "temperature",
         variable: "varname",
         variableType: "output",
+        variablePeriod: "",
         text: "send",
         message: "testing123",
         widget: "button",

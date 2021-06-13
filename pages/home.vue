@@ -27,6 +27,7 @@
           :config= "fixWidget(widget)"
 
         ></Iotindicator>
+
                             <!-- JSONS -->
                             <h4>Widgets</h4>
     <Json :value="fixWidget(widget)"></Json> 
@@ -41,7 +42,7 @@ export default {
   name:'Home',
   methods:{
     fixWidget(widget){
-      var widgetTemp = JSON.parse(JSON.stringify(widget));
+      var widgetTemp = JSON.parse(JSON.stringify(widget));   // Hace una copia nueva
       widgetTemp.selectedDevice.dId = this.$store.state.selectedDevice.dId;
       widgetTemp.selectedDevice.name = this.$store.state.selectedDevice.name;
       widgetTemp.userId = this.$store.state.selectedDevice.userId;

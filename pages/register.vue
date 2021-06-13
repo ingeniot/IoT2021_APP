@@ -92,7 +92,7 @@ export default {
           return;
         }
       })
-      .catch((e)=>{
+      .catch(e=>{
         console.log(e.response.data);
         if(e.response.data.error.errors.email.kind == "unique"){
           this.$notify({

@@ -1,6 +1,5 @@
 <template>
 
-
     <card type="chart">
 
         <template slot="header">
@@ -112,7 +111,8 @@
                 handler() {
                     setTimeout(() => {
                         
-                        this.chartOptions.series[0].name = this.config.variableFullName + " " + this.config.unit;
+                        this.chartOptions.series[0].name = this.config.variableFullName + " " + 
+                        this.config.unit;
                         this.updateColorClass();
                         window.dispatchEvent(new Event('resize'));
                     }, 1000);
@@ -120,14 +120,16 @@
             }
         },
         mounted() {
-            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + this.config.variable + "/sdata", this.processReceivedData);
+            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + 
+            this.config.variable + "/sdata", this.processReceivedData);
             this.getNow();
             console.log("ejecutando mounted en el chart");
             this.getChartData();
             this.updateColorClass();
         },
         beforeDestroy() {
-            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + this.config.variable + "/sdata", this.procesReceivedData);
+            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + 
+            this.config.variable + "/sdata", this.processReceivedData);
         },
         methods: {
             updateColorClass() {
@@ -170,8 +172,8 @@
                             aux.push(element.value);
                             this.chartOptions.series[0].data.push(aux);
                         });
-                        console.log("primer dato time "+this.chartOptions.series[0].data[0].[0]);
-                        console.log("primer dato value"+this.chartOptions.series[0].data[0].[1]);
+                        //console.log("primer dato time "+this.chartOptions.series[0].data[0].[0]);
+                        //console.log("primer dato value"+this.chartOptions.series[0].data[0].[1]);
                         this.isMounted = true;
                         return;
                     })
@@ -198,9 +200,9 @@
                 this.time = Date.now();
                 this.value = data.value;
                 setTimeout(() => {
-                    if(data.save){
-                        console.log("precesando datos");
-                        this.getChartData(); 
+                    if(data.save == 1){
+                        console.log("procesando datos");
+                        getChartData();
                     }
 
                 }, 1000);

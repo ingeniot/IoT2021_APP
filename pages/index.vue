@@ -340,7 +340,7 @@ export default {
     };
   },
     mounted () {
-      $nuxt.$router.push("/dashboard");
+      $nuxt.$router.push("/home");
     this.initBigChart(0);
   },
   computed: {
