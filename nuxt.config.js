@@ -87,6 +87,7 @@ export default {
     mqtt_prefix: process. env.MQTT_PREFIX,
     mqtt_host: process.env.MQTT_HOST,
     mqtt_port: process.env.MQTT_PORT
+<<<<<<< HEAD
   },
   // Agregado para levantar en producción 
   server: {
@@ -95,6 +96,8 @@ export default {
   //Agregado para que se ejecute la API automaticamente al ejecutar el front
   serverMiddleware: {
     '/api': '~/api'
+=======
+>>>>>>> b73dfb8f37cfe81551fa71e467f75e4d8da6b658
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
