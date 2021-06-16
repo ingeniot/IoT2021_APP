@@ -29,11 +29,15 @@
         ></Iotindicator>
 
                             <!-- JSONS -->
-                            <h4>Widgets</h4>
+<!--                            <h4>Widgets</h4>
     <Json :value="fixWidget(widget)"></Json> 
+-->
       </div>
 
-    </div>        
+    </div> 
+    <div v-else>
+      select a device ...
+      </div>       
 </template>
 
 <script>

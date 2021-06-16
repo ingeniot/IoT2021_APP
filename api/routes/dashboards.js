@@ -3,6 +3,7 @@ const router = express.Router();
 const {checkAuth} = require('../middlewares/authentication.js');
 
 import Dashboard from '../models/dashboard.js';
+import Device from '../models/device.js';
 
 //Create dashsboards
 router.post('/dashboard', checkAuth, async(req, res)=>{
@@ -57,6 +58,17 @@ router.delete("/dashboard",checkAuth,async(req,res)=>{
     try {
         const userId = req.userData._id;
         const dashboardId = req.query.dashboardId;
+
+        const devices = await Device.find({userId: userId, dashboardId: dashboardId});
+        if(devices.length > 0){
+            const response = {
+                status: "error",
+                error: "dashboard in use"
+            }
+            return res.json(response);
+        }
+
+
         const result = await Dashboard.deleteOne({userId: userId, _id: dashboardId});
         const response = {
             status:"success",

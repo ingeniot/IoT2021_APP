@@ -6,24 +6,25 @@ const axios = require("axios");
 
 const auth = {
     auth: {
-        username:'admin',
-        password:'emqxsecret'
+        username: 'admin',
+        password: process.env.EMQX_MANAGEMENT_DEFAULT_APPLICATION_SECRET
     }
-}
+};
 
 /********************
  *                  *
-  Models          
+ *       Models     *    
  *                  *
  ********************/     
 import Device from '../models/device.js'
 import SaverRule from '../models/emqx_saver_rule.js'
 import Dashboard from '../models/dashboard.js'
 import AlarmRule from '../models/emqx_alarm_rule.js'
+import EmqxAuthRule from '../models/emqx_auth.js'
 
 /********************
  *                  *
-        API             
+ *       API        *    
  *                  *
  ********************/ 
 /*
@@ -144,8 +145,25 @@ router.delete("/device",checkAuth,async(req,res)=>{
         const dId = req.query.dId;
 
         await deleteSaverRule(dId);
+        
+        await deleteAllAlarmRules(userId,dId);
+
+        await deleteDeviceMqttAuth(dId);
 
         const result = await Device.deleteOne({userId: userId, dId: dId});
+
+        const devices = await Device.find({userId: userId});
+        if (devices.length >= 1){
+            var found = false;
+            devices.forEach(devices=>{
+                if(devices.selected == true){
+                    found = true;
+                }
+            });
+            if(!found){
+                await Device.updateOne({userId: userId, dId: devices[0].dId},{selected: true});
+            }
+        }
 
         const response = {
             status:"success",
@@ -264,6 +282,40 @@ async function deleteSaverRule(dId){
         console.log("Error deleting saver rule");
         console.log(error);   
         return false;             
+    }
+}
+
+async function deleteAllAlarmRules(userId,dId){
+    try {
+        const rules = await AlarmRule.find( {userId: userId, dId: dId});   
+        if(rules.length >= 0){
+            asyncForEach(rules, async rule=>{
+                const url = "http/localhost:8085/api/v4/rules/" + rule.emqxRuleId;
+                const result = await axios.delete(url,auth);
+            }); 
+            await AlarmRule.deleteMany({userId: userId, dId: dId});
+        } 
+        return true;
+    }
+    catch (error) {   
+        console.log("error");
+        return "error"
+    }
+}
+
+async function asyncForEach(array, callback){
+    for(let index = 0; index < array.length; index++){
+        await callback(array[index], index, array);
+    }
+}
+
+async function deleteDeviceMqttAuth(dId){
+    try {
+        await EmqxAuthRule.deleteMany({dId: dId, type: "device"});
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
     }
 }
 

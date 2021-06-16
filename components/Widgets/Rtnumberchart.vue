@@ -38,6 +38,7 @@
                 time: Date.now(),
                 nowTime: Date.now(),
                 isMounted: false,
+                topic: "",
                 chartOptions: {
                     credits: {
                         enabled: false
@@ -104,32 +105,36 @@
                 },
             };
         },
-        watch: {
-            config: {
-                immediate: true,
-                deep: true,
-                handler() {
+        watch: {                    //es un observador que esta constantemente mirando si hay un cambio
+            config: {               // en este caso en la variable config
+                immediate: true,    // la reacción ante el cambio es inmediata
+                deep: true,         // tambien obseerva los elementos anidados
+                handler() {         // REspuesta ante el cambio
                     setTimeout(() => {
-                        
+
+                        this.value = 0;
+                        this.$nuxt.$off(this.topic + "/sdata", this.processReceivedData);  
+                        this.topic = this.config.userId + '/' + this.config.selectedDevice.dId + '/' + 
+                        this.config.variable;
+                        this.$nuxt.$on(this.topic + "/sdata", this.processReceivedData);                                              
                         this.chartOptions.series[0].name = this.config.variableFullName + " " + 
                         this.config.unit;
+
+                        this.chartOptions.series[0].data = [];
+                        this.getChartData();
                         this.updateColorClass();
                         window.dispatchEvent(new Event('resize'));
-                    }, 1000);
+                    },300);
                 }
             }
         },
         mounted() {
-            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + 
-            this.config.variable + "/sdata", this.processReceivedData);
             this.getNow();
             console.log("ejecutando mounted en el chart");
-            this.getChartData();
             this.updateColorClass();
         },
         beforeDestroy() {
-            this.$nuxt.$on(this.config.userId + '/' + this.config.selectedDevice.dId + '/' + 
-            this.config.variable + "/sdata", this.processReceivedData);
+            this.$nuxt.$off(this.topic + "/sdata", this.processReceivedData);
         },
         methods: {
             updateColorClass() {
@@ -197,6 +202,7 @@
                 }
             },
             processReceivedData(data) {
+                try {
                 this.time = Date.now();
                 this.value = data.value;
                 setTimeout(() => {
@@ -204,8 +210,11 @@
                         console.log("procesando datos");
                         getChartData();
                     }
+                }, 1000);                    
+                } catch (error) {
+                   console.log(error); 
+                }
 
-                }, 1000);
             },
             getNow() {
                 this.nowTime = Date.now();

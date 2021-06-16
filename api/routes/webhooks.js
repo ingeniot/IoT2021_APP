@@ -29,44 +29,10 @@ setTimeout(() => {
       API         
  *                  *
  ********************/  
-var deviceConfig = {
-    username: 'sgrsdgadsg',
-    password: 'fwerff423f',
-    topic: "gwergewrgewrgergeqr/ferfqe/",
-    variables:[
-        {
-            variable: '5t4es4r35r',
-            variableFullName: 'Temperature',
-            variableType: 'input',
-            variablePeriod: 10,
-        },
-        {
-            variable: '5t4esds35r',
-            variableFullName: 'Humidity',
-            variableType: 'output',
-            variablePeriod: 20,
-        },
-        {
-            variable: '5t4es4rd5r',
-            variableFullName: 'Pump',
-            variableType: 'output',
-            variablePeriod: undefined,
-        },
-        {
-            variable: '5t4es4r35d',
-            variableFullName: 'Fan',
-            variableType: 'input',
-            variablePeriod: undefined,
-        }
-
-    ]
-
-}
-
 router.post('/saver-webhook', async(req,res)=>{
    // console.log(req);
     try {
-        if(req.headers.token != "121212"){
+        if(req.headers.token != process.env.EMQX_API_TOKEN){
             res.sendStatus(404);
             return;
         }
@@ -111,7 +77,7 @@ router.post('/saver-webhook', async(req,res)=>{
 router.post('/alarm-webhook', async(req,res)=>{
     // console.log(req);
      try {
-         if(req.headers.token != "121212"){
+         if(req.headers.token != process.env.EMQX_API_TOKEN){
              res.sendStatus(404);
              return;
          }
@@ -236,20 +202,20 @@ router.post("/getDeviceConfig", async(req,res)=>{
 // MQTT FUNCTIONS
 function startMqttClient(){
     const options = {
-        port:1883,
-        host:'localhost',
-        clientId:'webhook_superuser'+Math.round(Math.random()*(0-10000)*-1),
-        username: 'superuser',
-        password: 'superuser',
+        port: 1883,
+        host: process.env.EMQX_HOST,
+        clientId: 'webhook_superuser'+Math.round(Math.random()*(0-10000)*-1),
+        username: process.env.EMQX_SUPERUSER_USERNAME,
+        password: process.env.EMQX_SUPERUSER_PASSWORD,
         keepalive: 60,
         reconnectPeriod: 5000,
-        protocolId:'MQIsdp',
+        protocolId: 'MQIsdp',
         protocolVersion: 3,
         clean: true,
         encoding: 'utf8'
     };
 
-    client = mqtt.connect('mqtt://'+'localhost',options);
+    client = mqtt.connect('mqtt://'+process.env.EMQX_HOST,options);
 
     client.on('connect',function(){
         console.log("MQTT CONNECTION->SUCCESS".bgGreen);
@@ -305,6 +271,7 @@ async function createMqttAuth(dId,userId){
         if(rule.length == 0){
             const newRule = {
                 userId: userId,
+                dId: dId,
                 username: createId(10),
                 password: createId(10),
                 publish: [userId+"/"+dId+"/+/sdata"],     

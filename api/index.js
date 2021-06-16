@@ -5,6 +5,7 @@ const morgan = require("morgan"); // midleware que muestra salida por cada petic
 const cors = require("cors");   //Políticas de acceso a la API
 const colors = require("colors"); // Salidas con identificación por colores
 
+require('dotenv').config();
 
 //instances
 const app = express();
@@ -30,8 +31,8 @@ app.use('/api',require('./routes/rules.js'));
 app.use('/api',require('./routes/dataprovider.js'));
 //listener
 
-app.listen(3001, () => {
-    console.log("API server listening in port 3001");
+app.listen(process.env.API_PORT, () => {
+    console.log("API server listening in port " + process.env.API_PORT);
 });
 
 //endpoints
@@ -43,11 +44,11 @@ app.get("/api", (req, res) => {
 });*/
 
 //mongo conection
-const mongoUserName = "ingeniot";
-const mongoPassword = "ingeniot2828";
-const mongoHost = "localhost";
-const mongoPort = "27017";
-const mongoDatabase = "ingeniot"
+const mongoUserName = process.env.MONGO_USERNAME;
+const mongoPassword = process.env.MONGO_PASSWORD;
+const mongoHost = process.env.MONGO_HOST;
+const mongoPort = process.env.MONGO_PORT;
+const mongoDatabase = process.env.MONGO_DATABASE;
 
 var uri = "mongodb://" + mongoUserName + ":" + mongoPassword + "@" + mongoHost + ":" + mongoPort + "/" + mongoDatabase;
 
