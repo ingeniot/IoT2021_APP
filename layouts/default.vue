@@ -151,8 +151,8 @@
         sidebarBackground: 'vue', //vue|blue|orange|green|red|primary
         client: null,
         options: {
-          host:'localhost',
-          port: 8083,
+          host: process.env.mqtt_host,
+          port: process.env.mqtt_port,
           endpoint: '/mqtt',
           clientId:"web_" + this.$store.state.auth.userData.name + "_" + Math.floor(Math.random()*1000000+1),
           username: null,
@@ -206,7 +206,7 @@
         //topic struct  userId/dId/variableId/sdata
         const deviceSubscribeTopic = this.$store.state.auth.userData._id + "/+/+/sdata";
         const notifSubscribeTopic = this.$store.state.auth.userData._id + "/+/+/notif";     
-        const connectUrl = "ws://" + this.options.host + ":" + this.options.port + this.options.endpoint;
+        const connectUrl = process.env.mqtt_prefix + this.options.host + ":" + this.options.port + this.options.endpoint;
         try {
           this.client = mqtt.connect(connectUrl,this.options);       
         } catch (error) {
@@ -287,12 +287,16 @@
             console.log("username===>"+this.options.username);
             console.log("password===>"+this.options.password);            
           }    
-          else{
-            console.log("Error getting mqtt user auth");
-          } 
         } catch (error) {
           console.log(error);
-        };
+          if(error.response.status == 401){
+            console.log("NO VALID TOKEN");
+            localStorage.clear();
+            const auth = {};
+            this.$store.commmit("setAuth", auth);            
+            window.location.href = "/login";
+          }
+        }
 
       },
      async getMqttAuth(){ //getMqttCredentialsForReconnection() 

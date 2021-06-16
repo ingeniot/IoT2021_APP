@@ -6,10 +6,10 @@ const axios = require("axios");
 
 const auth = {
     auth: {
-        username:'admin',
-        password:'emqxsecret'
+        username: 'admin',
+        password: process.env.EMQX_MANAGEMENT_DEFAULT_APPLICATION_SECRET
     }
-}
+};
 
 /********************
  *                  *

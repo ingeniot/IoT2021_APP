@@ -95,7 +95,7 @@
         >
           <div class="photo"><img src="img/mike.jpg" /></div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
-          <p class="d-lg-none">Log out</p>
+          <p @click= "logout()" class="d-lg-none">Log out</p>
         </template>
         <li class="nav-link">
           <a href="#" class="nav-item dropdown-item">Profile</a>
@@ -105,7 +105,7 @@
         </li>
         <div class="dropdown-divider"></div>
         <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Log out</a>
+          <a @click= "logout()" href="#" class="nav-item dropdown-item">Log out</a>
         </li>
       </base-dropdown>
     </ul>
@@ -230,6 +230,14 @@ export default {
           return;
       });
     },
+    logout(){
+      console.log("logout");
+      //localStorage.removeItem("auth");
+      localStorage.clear();
+      const auth = {};
+      this.$store.commmit("setAuth", auth);
+      windows.location.href = "/login"
+      }
   }
 };
 </script>

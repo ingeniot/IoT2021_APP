@@ -74,19 +74,19 @@ router.post("/login", async(req,res)=>{
     if (bcrypt.compareSync(password, user.password)){
         user.set('password',undefined,{strict: false});
         const token = jwt.sign({userData:user},'securePasswordHere', {expiresIn: 60*60*24*30});
-        const toSend = {
+        const response = {
             status:"success",
             token:token,
             userData:user
             }
-             return res.json(toSend);
+             return res.json(response);
         }
     else{
-        const toSend = {       
+        const response = {       
         status:"PASSWORD WRONG",
         error:"Invalid credentials"
         };
-        res.status(401).json(toSend);   
+        res.status(401).json(response);   
     }
     console.log(user);
 });

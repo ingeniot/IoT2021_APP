@@ -858,6 +858,7 @@ export default {
         if(res.data.status == "success"){
           this.$notify({type: 'success', icon: 'tim-icons icon-alert-circle-exc', message: 'Dashboard created!'});
           this.getDashboards();
+          this.widgets =[];
         } 
       } catch (error) {
           this.$notify({type: 'danger', icon: 'tim-icons icon-alert-circle-exc', message: 'Dashboard creating error!'});
@@ -901,6 +902,13 @@ export default {
       };
       try {
         const res = await this.$axios.delete("/dashboard", axiosHeader);   
+        if(res.data.status == "error" && res.data.error == "Dashboard in use"){
+          this.$notify({
+              type: "danger",
+              icon: "tim-icons icon-alert-circle-exc",
+              message: dashboard.name + " is in use. First remove devices using this dashboard"
+          });            
+        }
         if(res.data.status == "success"){
               this.$notify({
               type: "success",
