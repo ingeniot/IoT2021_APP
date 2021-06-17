@@ -15,6 +15,15 @@ const auth = {
 global.saverResource = null;
 global.alarmResource = null;
 
+
+/********************
+ *                  *
+ *       Models     *    
+ *                  *
+ ********************/     
+
+import EmqxAuthRule from '../models/emqx_auth.js'
+
 /**************************************
 * EMQX RESOURCES MANAGER
 * https://docs.emqx.io/en/broker/v4.1/advanced/http-api.html#response-code
@@ -25,7 +34,7 @@ setTimeout(()=>{
 
 async function listResources(){
     try {
-        const url = "http://localhost:8085/api/v4/resources";
+        const url = "http://" + process.env.EMQX_HOST + ":8085/api/v4/resources";
         const res = await axios.get (url, auth);
         if(res.status === 200){
             const resourcesNumber = res.data.data.length;
@@ -78,11 +87,11 @@ async function listResources(){
 
 async function createResources(){
     try {
-        const url = "http://localhost:8085/api/v4/resources";
+        const url = "http://" + process.env.EMQX_HOST + ":8085/api/v4/resources";
         const data1 = {
             "type": "web_hook",
             "config": {
-                "url": "http://localhost:3001/api/saver-webhook",
+                "url": "http://" + process.env.API_HOST + ":3001/api/saver-webhook",
                 "headers": {"token":process.env.EMQX_API_TOKEN},
                 "method": "POST"
             },
@@ -91,7 +100,7 @@ async function createResources(){
         const data2 = {
             "type": "web_hook",
             "config": {
-                "url": "http://localhost:3001/api/alarm-webhook",
+                "url": "http://" + process.env.API_HOST + ":3001/api/alarm-webhook",
                 "headers": {"token":process.env.EMQX_API_TOKEN},
                 "method": "POST"
             },
@@ -108,11 +117,38 @@ async function createResources(){
         setTimeout(()=>{
             console.log("EMQX resources created!".green);
             listResources();
-        }, 1000)        
+        }, process.env.EMQX_RESOURCES_DELAY)        
     } catch (error) {
         console.log("Error creating rsources");
         console.log(error);
     }
 
+}
+
+//Create superuser in mongo if not exist
+global.checkMqttSuperuser = async function checkMqttSuperuser(){
+   try {
+       const superUser = await EmqxAuthRule.find({type:"superuser"});
+       if(supeerUser.length > 0){
+           return;
+       }
+       else if(suoerUser.length == 0){
+            await EmqxAuthRule.create(
+                {
+                    publish: ["#"],
+                    subscribe: ["#"],
+                    userId: "superuser",
+                    username: "superuser",
+                    password: "superuser",
+                    type: "superuser",
+                    createdTime: Date.now(),
+                    updatedTime: Date.now()
+                }
+            );
+            console.log("superuser created");
+       }
+   } catch (error) {
+        console.log("Superuser created error: " + error);
+   } 
 }
 module.exports = router;

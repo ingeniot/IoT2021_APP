@@ -209,7 +209,7 @@ async function selectDevice(userId, dId){
 async function createSaverRule(userId, dId, status){
     try {
 
-    const url = "http://localhost:8085/api/v4/rules";
+    const url = "http://" + process.env.EMQX_HOST + ":8085/api/v4/rules";
     const topic = userId + "/" + dId + "/+/sdata";
 
     const rawsql = "SELECT topic, payload FROM \"" + topic + "\" WHERE payload.save = 1";
@@ -274,7 +274,7 @@ async function getAlarmRules(userId){
 async function deleteSaverRule(dId){
     try {
         const mongoRule = await SaverRule.findOne({dId: dId});
-        const url = "http://localhost:8085/api/v4/rules/" + mongoRule.emqxRuleId;  
+        const url = "http://" + process.env.EMQX_HOST + ":8085/api/v4/rules/" + mongoRule.emqxRuleId;  
         const emqxRule = await axios.delete(url, auth);
         const deleted = await SaverRule.deleteOne({dId: dId});
         return true;           
@@ -290,7 +290,7 @@ async function deleteAllAlarmRules(userId,dId){
         const rules = await AlarmRule.find( {userId: userId, dId: dId});   
         if(rules.length >= 0){
             asyncForEach(rules, async rule=>{
-                const url = "http/localhost:8085/api/v4/rules/" + rule.emqxRuleId;
+                const url = "http/" + process.env.EMQX_HOST + ":8085/api/v4/rules/" + rule.emqxRuleId;
                 const result = await axios.delete(url,auth);
             }); 
             await AlarmRule.deleteMany({userId: userId, dId: dId});

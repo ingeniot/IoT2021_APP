@@ -64,7 +64,7 @@ const options = {
         console.log("* Mongo sucesfully connected!*".green);
         console.log("******************************".green);
         console.log("\n");
-
+        global.checkMqttSuperuser();
     },(err)=>{
         console.log("\n");
         console.log("******************************".red);
