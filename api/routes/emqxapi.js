@@ -129,10 +129,10 @@ async function createResources(){
 global.checkMqttSuperuser = async function checkMqttSuperuser(){
    try {
        const superUser = await EmqxAuthRule.find({type:"superuser"});
-       if(supeerUser.length > 0){
+       if(superUser.length > 0){
            return;
        }
-       else if(suoerUser.length == 0){
+       else if(superUser.length == 0){
             await EmqxAuthRule.create(
                 {
                     publish: ["#"],
