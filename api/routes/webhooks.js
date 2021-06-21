@@ -20,7 +20,7 @@ var client;
 
 //Start
 setTimeout(() => {
-    console.log("Start MQTT connection");
+    console.log("API Start MQTT connection");
     startMqttClient();
 }, 3000);
 
@@ -218,17 +218,17 @@ function startMqttClient(){
     client = mqtt.connect('mqtt://'+process.env.EMQX_HOST,options);
 
     client.on('connect',function(){
-        console.log("MQTT CONNECTION->SUCCESS".bgGreen);
+        console.log("API MQTT CONNECTION->SUCCESS".bgGreen);
         console.log("\n");
     });
 
     client.on('reconnect',(error)=>{
-        console.log("RECONNECTING MQTT");
+        console.log("API RECONNECTING MQTT");
         console.log(error);
     });
 
     client.on('error',(error)=>{
-        console.log("MQTT CONNECTION FAIL ->");
+        console.log("API MQTT CONNECTION FAIL ->");
         console.log(error);
     });
 }  
