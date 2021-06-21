@@ -58,6 +58,7 @@ const options = {
     useUnifiedTopology: true,
     authSource: "admin",
 };
+        console.log("*Connecting  Mongo....".yellow);
         mongoose.connect(uri,options).then(()=>{
         console.log("\n");
         console.log("******************************".green);
