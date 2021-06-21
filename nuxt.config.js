@@ -90,7 +90,7 @@ export default {
   },
   // Agregado para levantar en producción 
   server: {
-    port:3000, // default 3000
+    port: 3000, // default 3000
     host:'0.0.0.0' //default:localhost   0.0.0.0 permite el acceso desde cualquier IP
   },
     //Agregado para que se ejecute la API automaticamente al ejecutar el front

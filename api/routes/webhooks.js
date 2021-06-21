@@ -216,7 +216,7 @@ function startMqttClient(){
     };
 
     client = mqtt.connect('mqtt://'+process.env.EMQX_HOST,options);
-
+    console.log('mqtt://'+process.env.EMQX_HOST);
     client.on('connect',function(){
         console.log("API MQTT CONNECTION->SUCCESS".bgGreen);
         console.log("\n");
