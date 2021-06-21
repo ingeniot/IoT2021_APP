@@ -217,6 +217,8 @@ function startMqttClient(){
 
     client = mqtt.connect('mqtt://'+process.env.EMQX_HOST,options);
     console.log('mqtt://'+process.env.EMQX_HOST);
+    console.log('username:'+ process.env.EMQX_SUPERUSER_USERNAME),
+     console.log('password:'+ process.env.EMQX_SUPERUSER_PASSWORD),
     client.on('connect',function(){
         console.log("API MQTT CONNECTION->SUCCESS".bgGreen);
         console.log("\n");
@@ -224,6 +226,9 @@ function startMqttClient(){
 
     client.on('reconnect',(error)=>{
         console.log("API RECONNECTING MQTT");
+            console.log('mqtt://'+process.env.EMQX_HOST);
+    console.log('username:'+ process.env.EMQX_SUPERUSER_USERNAME),
+     console.log('password:'+ process.env.EMQX_SUPERUSER_PASSWORD),
         console.log(error);
     });
 
