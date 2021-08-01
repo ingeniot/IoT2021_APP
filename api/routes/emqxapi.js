@@ -29,8 +29,9 @@ import EmqxAuthRule from '../models/emqx_auth.js'
 * https://docs.emqx.io/en/broker/v4.1/advanced/http-api.html#response-code
 **************************************/
 setTimeout(()=>{
+    console.log("LISTING RESOURCES!!!!!");
     listResources();
-}, 1000);
+}, process.env.EMQX_RESOURCES_DELAY);
 
 async function listResources(){
     try {
