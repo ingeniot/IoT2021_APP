@@ -25,7 +25,9 @@ import BasePagination from './BasePagination.vue';
 
 import SidebarPlugin from './SidebarPlugin';
 
-
+export default {
+  name:"index"
+}
 export {
   BaseCheckbox,
   IconCheckbox,
