@@ -103,7 +103,8 @@ export default {
             message: "User already exists!"
           });
           return;
-        } else {
+        } else {        
+          conole.log("error creating user"); 
           this.$notify({
             type: "danger",
             icon: "tim-icons icon-circle-exc",
