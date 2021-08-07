@@ -111,7 +111,6 @@ export default {
           return;          
         }
       })
-    }
   }
 };
 </script>
