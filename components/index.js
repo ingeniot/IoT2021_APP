@@ -27,7 +27,8 @@ import SidebarPlugin from './SidebarPlugin';
 
 export default {
   name:"index"
-}
+};
+
 export {
   BaseCheckbox,
   IconCheckbox,
