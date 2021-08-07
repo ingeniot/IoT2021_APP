@@ -83,7 +83,7 @@ router.post("/login", async(req,res)=>{
         }
     else{
         const response = {       
-        status:"PASSWORD WRONG",
+        status:"error",
         error:"Invalid credentials"
         };
         res.status(401).json(response);   
