@@ -78,9 +78,7 @@ export default {
             icon: "tim-icons icon-check-2",
             message: "Success. Welcome " + res.data.userData.name + "!"
           });
-
           console.log(res.data);
-
           const auth = {
             token: res.data.token,
             userData: res.data.userData
@@ -90,16 +88,17 @@ export default {
           //set auth object in localstorage (persistance)
           localStorage.setItem('auth',JSON.stringify(auth));
           $nuxt.$router.push('/home');
-
           return;
         }
         else
+          {
           this.$notify({
             type: "danger",
             icon: "tim-icons icon-circle-exc",
             message: "Login error. Try again"
           });
           return;
+        };
       })
       .catch((e)=>{
         console.log(e.response.data);
@@ -109,9 +108,9 @@ export default {
             message: "Error"+ e.response.data + ". Try again"
           });
           return;          
-        }
-      })
-  }
+        })
+      }
+    }
 };
 </script>
 
