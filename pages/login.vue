@@ -93,22 +93,20 @@ export default {
 
           return;
         }
+        else
+          this.$notify({
+            type: "danger",
+            icon: "tim-icons icon-circle-exc",
+            message: "Login error. Try again"
+          });
+          return;
       })
       .catch((e)=>{
         console.log(e.response.data);
-        if(e.response.data.error.errors.email.kind == "unique"){
           this.$notify({
             type: "danger",
             icon: "tim-icons icon-circle-exc",
-            message: "User already exists!"
-          });
-          return;
-        } else {        
-          conole.log("error creating user"); 
-          this.$notify({
-            type: "danger",
-            icon: "tim-icons icon-circle-exc",
-            message: "Error creating user"
+            message: "Error"+ e.response.data + ". Try again"
           });
           return;          
         }

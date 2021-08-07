@@ -235,7 +235,7 @@ export default {
       //localStorage.removeItem("auth");
       localStorage.clear();
       const auth = {};
-      this.$store.commmit("setAuth", auth);
+      this.$store.commit("setAuth", auth);
       windows.location.href = "/login"
       }
   }
