@@ -236,7 +236,7 @@ export default {
       localStorage.clear();
       const auth = {};
       this.$store.commit("setAuth", auth);
-      windows.location.href = "/login"
+      window.location.href = "/login"
       }
   }
 };

@@ -36,6 +36,8 @@ setTimeout(()=>{
 async function listResources(){
     try {
         const url = "http://" + process.env.EMQX_HOST + ":8085/api/v4/resources";
+        console.log("http://" + process.env.EMQX_HOST + ":8085/api/v4/resources");
+        console.log("auth.password:" + auth.password);        
         const res = await axios.get (url, auth);
         if(res.status === 200){
             const resourcesNumber = res.data.data.length;
