@@ -50,14 +50,15 @@
                     <el-table-column label="Device ID"  prop="dId"></el-table-column>
                     <el-table-column label="Password"  prop="password"></el-table-column>
                     <el-table-column label="Device Type"  prop="templateName"></el-table-column>
-<!--
+
                     <el-table-column label="Actions">
-                        <div slot-scope="{row,$index}">
+                        <div slot-scope="{row}">
                             <el-tooltip content="Saver status indicator" style="margin-right:10px">
-                                <i class="fas fa-database" :class="{'text-success': row.saverRule.status,'text-dark': !row.saverRule.status}"></i>
+                                <i class="fas fa-database" :class="{'text-success': true,'text-dark': false}"></i>
                             </el-tooltip>
+                            
                             <el-tooltip content="Save Data">
-                                <base-switch @click="updateSaverRuleStatus(row.saverRule)" :value= "row.saverRule.status" type="primary" on-text="on" off-text="off" ></base-switch>
+                                <base-switch @click="updateSaverRuleStatus(row.saverRule)" :value= "true" type="primary" on-text="on" off-text="off" ></base-switch>
                             </el-tooltip>
                             <el-tooltip content="Delete" effect="light" :open:delay="300" placement="top">
                             <base-button type="danger" icon size="small" class="btn-link" @click="deleteDevice(row)">
@@ -66,7 +67,7 @@
                         </el-tooltip>
                         </div>
                    </el-table-column>
-                   -->
+                   
 
                </el-table>
             </card>            
