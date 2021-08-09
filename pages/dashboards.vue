@@ -531,7 +531,7 @@
 
           <!-- WIDGET PREVIEW -->
           <div class="col-6">
-            <RTNnumberChart
+            <RTNumberChart
               v-if="widgetType == 'numberchart'"
               :config="ncConfig"
             ></RTNumberChart>
