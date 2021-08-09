@@ -36,7 +36,9 @@ router.post("/register",async(req,res)=>{
         const name = req.body.name;
         const email = req.body.email;
         const password = req.body.password;
+        console.log("password=>"+password);
         const encryptedPassword = bcrypt.hashSync(password, 10);
+        console.log("Encrypted password=>"+ encryptedPassword);
         const newUser = {
             name: name,
             email: email,
