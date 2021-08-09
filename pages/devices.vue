@@ -52,8 +52,8 @@
                     <el-table-column label="Device Type"  prop="templateName"></el-table-column>
 
                     <el-table-column label="Actions">
-                        <div slot-scope="{row}">
-                            <el-tooltip content="Saver status indicator">
+                        <div slot-scope="{row,$index}">
+                            <el-tooltip content="Saver status indicator" style="margin-right:10px">
                                 <i class="fas fa-database" :class="{'text-success': row.saverRule.status,'text-dark': !row.saverRule.status}"></i>
                             </el-tooltip>
                             <el-tooltip content="Save Data">
