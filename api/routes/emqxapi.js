@@ -121,7 +121,7 @@ async function createResources(){
             listResources();
         }, process.env.EMQX_RESOURCES_DELAY)        
     } catch (error) {
-        console.log("Error creating rsources");
+        console.log("Error creating resources");
         console.log(error);
     }
 
