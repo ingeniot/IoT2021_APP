@@ -50,7 +50,7 @@
                     <el-table-column label="Device ID"  prop="dId"></el-table-column>
                     <el-table-column label="Password"  prop="password"></el-table-column>
                     <el-table-column label="Device Type"  prop="templateName"></el-table-column>
-
+<!--
                     <el-table-column label="Actions">
                         <div slot-scope="{row,$index}">
                             <el-tooltip content="Saver status indicator" style="margin-right:10px">
@@ -66,6 +66,7 @@
                         </el-tooltip>
                         </div>
                    </el-table-column>
+                   -->
 
                </el-table>
             </card>            
