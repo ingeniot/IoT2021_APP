@@ -2,14 +2,12 @@
     <div class="row">
         <IotIndicator :config = "configIndicator"></IotIndicator>
         <button @click="sendData()">SEND</button>
-        
         <IotButton :config = "configButton"></IotButton>
 
     </div>
 </template>
 
 <script>
-import Iotbutton from '../components/Widgets/Iotbutton.vue';
 export default {
     components: { Iotbutton },
     data(){
@@ -51,3 +49,4 @@ export default {
         }
     },
     methods:{
+    }

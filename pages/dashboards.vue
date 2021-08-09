@@ -293,28 +293,28 @@
             <!-- FORM BUTTON TYPE -->
             <div v-if="widgetType == 'button'">
               <base-input
-                v-model="buttonConfig.variableFullName"
+                v-model="iotButtonConfig.variableFullName"
                 label="Var Name"
                 type="text"
               >
               </base-input>
 
               <base-input
-                v-model="buttonConfig.message"
+                v-model="iotButtonConfig.message"
                 label="Message to send"
                 type="text"
               >
               </base-input>
 
               <base-input
-                v-model="buttonConfig.text"
+                v-model="iotButtonConfig.text"
                 label="Button Text"
                 type="text"
               >
               </base-input>
 
               <base-input
-                v-model="buttonConfig.icon"
+                v-model="iotButtonConfig.icon"
                 label="Icon"
                 type="text"
               ></base-input>
@@ -322,7 +322,7 @@
               <br />
 
               <el-select
-                v-model="buttonConfig.class"
+                v-model="iotButtonConfig.class"
                 class="select-success"
                 placeholder="Select Class"
                 style="width: 100%;"
@@ -352,7 +352,7 @@
               <br /><br /><br />
 
               <el-select
-                v-model="buttonConfig.column"
+                v-model="iotButtonConfig.column"
                 class="select-success"
                 placeholder="Select Column Width"
                 style="width: 100%;"
@@ -531,22 +531,22 @@
 
           <!-- WIDGET PREVIEW -->
           <div class="col-6">
-            <Rtnumberchart
+            <RTNnumberChart
               v-if="widgetType == 'numberchart'"
               :config="ncConfig"
-            ></Rtnumberchart>
-            <Iotswitch
+            ></RTNumberChart>
+            <IotSwitch
               v-if="widgetType == 'switch'"
               :config="iotSwitchConfig"
-            ></Iotswitch>
-            <Iotbutton
+            ></IotSwitch>
+            <IotButton
               v-if="widgetType == 'button'"
               :config="buttonConfig"
-            ></Iotbutton>
-            <Iotindicator
+            ></IotButton>
+            <IotIndicator
               v-if="widgetType == 'indicator'"
               :config="iotIndicatorConfig"
-              ></Iotindicator>
+              ></IotIndicator>
           </div>
         </div>
 
@@ -581,25 +581,25 @@
           style="margin-bottom: 10px;"
         ></i>
 
-        <Rtnumberchart
+        <RTNumberChart
           v-if="widget.widget == 'numberchart'"
           :config="widget"
-        ></Rtnumberchart>
+        ></RTNumberChart>
 
-        <Iotswitch
+        <IotSwitch
           v-if="widget.widget == 'switch'"
           :config="widget"
-        ></Iotswitch>
+        ></IotSwitch>
 
-        <Iotbutton
+        <IotButton
           v-if="widget.widget == 'button'"
           :config="widget"
-        ></Iotbutton>
+        ></IotButton>
 
-        <Iotindicator
+        <IotIndicator
           v-if="widget.widget == 'indicator'"
           :config="widget"
-        ></Iotindicator>
+        ></IotIndicator>
       </div>
     </div>
 
@@ -763,7 +763,7 @@ export default {
         icon: "fa-bath",
         column: "col-6"
       },
-      buttonConfig: {
+      iotButtonConfig: {
         userId: "userid",
         selectedDevice: {
           name: "Home",
@@ -814,8 +814,8 @@ export default {
         this.widgets.push(JSON.parse(JSON.stringify(this.iotSwitchConfig)));
       }
       if (this.widgetType == "button") {
-        this.buttonConfig.variable = this.makeid(10);
-        this.widgets.push(JSON.parse(JSON.stringify(this.buttonConfig)));
+        this.iotButtonConfig.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.iotButtonConfig)));
       }
       if (this.widgetType == "indicator") {
         this.iotIndicatorConfig.variable = this.makeid(10);
