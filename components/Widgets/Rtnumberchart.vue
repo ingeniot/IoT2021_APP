@@ -22,10 +22,7 @@
         </div>
 
     </card>
-
-
 </template>
-
 
 <script>
     export default {
@@ -109,9 +106,8 @@
             config: {               // en este caso en la variable config
                 immediate: true,    // la reacción ante el cambio es inmediata
                 deep: true,         // tambien obseerva los elementos anidados
-                handler() {         // REspuesta ante el cambio
+                handler() {         // Respuesta ante el cambio
                     setTimeout(() => {
-
                         this.value = 0;
                         this.$nuxt.$off(this.topic + "/sdata", this.processReceivedData);  
                         this.topic = this.config.userId + '/' + this.config.selectedDevice.dId + '/' + 
@@ -119,7 +115,6 @@
                         this.$nuxt.$on(this.topic + "/sdata", this.processReceivedData);                                              
                         this.chartOptions.series[0].name = this.config.variableFullName + " " + 
                         this.config.unit;
-
                         this.chartOptions.series[0].data = [];
                         this.getChartData();
                         this.updateColorClass();
@@ -208,7 +203,7 @@
                 setTimeout(() => {
                     if(data.save == 1){
                         console.log("procesando datos");
-                        getChartData();
+                        this.getChartData();
                     }
                 }, 1000);                    
                 } catch (error) {
