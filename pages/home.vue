@@ -7,26 +7,26 @@
       >
 
 
-        <Rtnumberchart
+        <RTNumberChart
           v-if="widget.widget == 'numberchart'"
           :config= "fixWidget(widget)"
-        ></Rtnumberchart>
+        ></RTNumberChart>
 
-        <Iotswitch
+        <IotSwitch
           v-if="widget.widget == 'switch'"
           :config= "fixWidget(widget)"
-        ></Iotswitch>
+        ></IotSwitch>
 
-        <Iotbutton
+        <IotButton
           v-if="widget.widget == 'button'"
           :config= "fixWidget(widget)"
-        ></Iotbutton>
+        ></IotButton>
 
-        <Iotindicator
+        <IotIndicator
           v-if="widget.widget == 'indicator'"
           :config= "fixWidget(widget)"
 
-        ></Iotindicator>
+        ></IotIndicator>
 
                             <!-- JSONS -->
 <!--                            <h4>Widgets</h4>
