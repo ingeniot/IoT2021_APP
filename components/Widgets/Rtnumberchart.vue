@@ -203,7 +203,7 @@
                 setTimeout(() => {
                     if(data.save == 1){
                         console.log("procesando datos");
-                        this.getChartData();
+                        getChartData();
                     }
                 }, 1000);                    
                 } catch (error) {
