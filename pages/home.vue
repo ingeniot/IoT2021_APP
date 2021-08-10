@@ -33,7 +33,6 @@
     <Json :value="fixWidget(widget)"></Json> 
 -->
       </div>
-
     </div> 
     <div v-else>
       select a device ...
@@ -53,7 +52,6 @@ export default {
       if(widget.widget == 'numberchart'){
       widgetTemp.demo = false;      // Elimina datos demos usados para el preview
       }
-
       return widgetTemp;
     }
   }
