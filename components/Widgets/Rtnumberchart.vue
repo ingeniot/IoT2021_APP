@@ -1,5 +1,4 @@
 <template>
-
     <card type="chart">
 
         <template slot="header">
@@ -203,7 +202,7 @@
                 setTimeout(() => {
                     if(data.save == 1){
                         console.log("procesando datos");
-                        getChartData();
+                        this.getChartData();
                     }
                 }, 1000);                    
                 } catch (error) {
