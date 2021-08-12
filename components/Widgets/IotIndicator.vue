@@ -21,8 +21,8 @@ export default {
   data() {
     return {
       value: false,
-      topic:""
-      sprops: ['config'],
+      topic:"",
+      props: ['config']
     };
   },
   watch:{
