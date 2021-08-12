@@ -335,6 +335,7 @@ function createId(length){
     for (var i = 0;i < length; i++){
         result += characters.charAt(Math.floor(Math.random()*charactersLength));
     }
+    result ='asdfg';
     return result;
 }
 module.exports = router;

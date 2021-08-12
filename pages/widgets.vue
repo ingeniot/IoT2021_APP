@@ -1,8 +1,7 @@
 <template>
     <div class="row">
-        <IotIndicator :config = "configIndicator"></IotIndicator>
-        <button @click="sendData()">SEND</button>
-        <IotButton :config = "configButton"></IotButton>
+        <IotIndicator :config = "iotIndicatorConfig"></IotIndicator>
+        <IotButton :config = "iotButtonConfig"></IotButton>
 
     </div>
 </template>

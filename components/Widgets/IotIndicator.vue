@@ -20,7 +20,9 @@ export default {
   props: ['config'],
   data() {
     return {
-      value: true
+      value: false,
+      topic:""
+      sprops: ['config'],
     };
   },
   watch:{
@@ -33,7 +35,7 @@ export default {
           this.$nuxt.$off(this.topic);
           const topic = this.config.userId + "/" + this.config.selectedDevice.dId + "/" + 
           this.config.variable + "/sdata";
-          this.$nuxt.$on(topic, processReceivedData);          
+          this.$nuxt.$on(topic, this.processReceivedData);          
         }, 300);
       }
 
@@ -54,9 +56,9 @@ export default {
         console.log(data);
         this.value = data.value;       
       } catch (error) {
-        console.log(error);      }
-    },
-      
+        console.log(error);      
+        }
+    },      
     getIconColorClass() {
       if (!this.value) {
         return "text-dark";

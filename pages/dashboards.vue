@@ -95,6 +95,7 @@
                 v-model="ncConfig.class"
                 class="select-success"
                 placeholder="Select Class"
+                label="Type"
                 style="width: 100%;"
               >
                 <el-option
@@ -126,6 +127,7 @@
                 class="select-success"
                 placeholder="Select Column Width"
                 style="width: 100%;"
+                label="Columns"
               >
                 <el-option
                   class="text-dark"
@@ -204,6 +206,7 @@
                 class="select-success"
                 placeholder="Select Class"
                 style="width: 100%;"
+                label="Type"
               >
                 <el-option
                   class="text-success"
@@ -234,6 +237,7 @@
                 class="select-success"
                 placeholder="Select Column Width"
                 style="width: 100%;"
+                label="Columns"
               >
                 <el-option
                   class="text-dark"
@@ -326,6 +330,7 @@
                 class="select-success"
                 placeholder="Select Class"
                 style="width: 100%;"
+                label="Type"
               >
                 <el-option
                   class="text-success"
@@ -356,6 +361,7 @@
                 class="select-success"
                 placeholder="Select Column Width"
                 style="width: 100%;"
+                label="Columns"                
               >
                 <el-option
                   class="text-dark"
@@ -442,6 +448,7 @@
                 class="select-success"
                 placeholder="Select Class"
                 style="width: 100%;"
+                label="Type"
               >
                 <el-option
                   class="text-success"
@@ -472,6 +479,7 @@
                 class="select-success"
                 placeholder="Select Column Width"
                 style="width: 100%;"
+                label="Columns"
               >
                 <el-option
                   class="text-dark"
