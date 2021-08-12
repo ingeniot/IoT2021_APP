@@ -12,7 +12,7 @@ export default {
     data(){
         return {
             value:false,
-        configIndicator: {
+        iotIndicatorConfig: {
             userId:"userid",
             selectedDevice:{
                 name:"home",
@@ -28,7 +28,7 @@ export default {
             widget:"indicator",
             class:"success"
             },
-        configButton: {
+        iotButtonConfig: {
             userId:"userid",
             selectedDevice:{
                 name:"home",
