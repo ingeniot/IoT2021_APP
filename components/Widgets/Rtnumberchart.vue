@@ -101,7 +101,7 @@
                 },
             };
         },
-        watch: {                    //es un observador que esta constantemente mirando si hay un cambio
+/*       watch: {                    //es un observador que esta constantemente mirando si hay un cambio
             config: {               // en este caso en la variable config
                 immediate: true,    // la reacción ante el cambio es inmediata
                 deep: true,         // tambien obseerva los elementos anidados
@@ -121,7 +121,7 @@
                     },300);
                 }
             }
-        },
+        },*/
         mounted() {
             this.getNow();
             console.log("ejecutando mounted en el chart");
