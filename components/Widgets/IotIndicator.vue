@@ -38,7 +38,6 @@ export default {
           this.$nuxt.$on(topic, this.processReceivedData);          
         }, 300);
       }
-
     }
   },
   mounted(){

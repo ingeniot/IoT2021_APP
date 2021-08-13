@@ -11,13 +11,9 @@
                 </base-switch>
 
             </h3>
-
         </template>
-
     </card>
-
 </template>
-
 
 <script>
     export default {

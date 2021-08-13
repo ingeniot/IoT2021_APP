@@ -13,7 +13,6 @@
     ></i>
 
     <base-button  @click="sendValue()" :type="config.class" class="mb-3 pull-right" size="lg">{{config.text}}</base-button>
-
   </card>
 </template>
 
