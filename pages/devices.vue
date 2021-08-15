@@ -18,8 +18,8 @@
                         <label> Dashboard</label>
                     </slot>
 
-                    <el-select v-model="selectedIndexDashboard" placeholder="Select dashboard*" style="width:100%">
-                        <el-option v-for = "dashboard, index in dashboards" v-bind:key="dashboard.id" class="text-dark" :value= "index" :label= "dashboard.name"></el-option>
+                    <el-select v-model="selectedIndexDashboard" placeholder="Select dashboard" class="select-primary" style="width:100%">
+                        <el-option v-for = "(dashboard, index) in dashboards" :key= "dashboard._id"  class="text-dark" :value= "index" :label= "dashboard.name"></el-option>
                     </el-select>
             </div>   
                    
@@ -41,7 +41,7 @@
 
                <el-table :data="$store.state.devices">
                     <el-table-column label="#" min-width="50" allign="center">
-                        <div slot-scope="{$index}">
+                        <div slot-scope= "{ row, $index}">
                             {{$index+1}}
                         </div>
                     </el-table-column>
@@ -49,10 +49,10 @@
                     <el-table-column label="Name" prop="name"></el-table-column>
                     <el-table-column label="Device ID"  prop="dId"></el-table-column>
                     <el-table-column label="Password"  prop="password"></el-table-column>
-                    <el-table-column label="Device Type"  prop="templateName"></el-table-column>
-
+                    <el-table-column label="Device Type"  prop="type"></el-table-column>
+                    <el-table-column label="Dashboard"  prop="dashboardName"></el-table-column>
                     <el-table-column label="Actions">
-                        <div slot-scope="{row}">
+                        <div slot-scope="{row, $index}">
                             <el-tooltip content="Saver status indicator" style="margin-right:10px">
                                 <i class="fas fa-database" :class="{'text-success': row.saverRule.status,'text-dark': !row.saverRule.status}"></i>
                             </el-tooltip>
@@ -61,15 +61,13 @@
                                 <base-switch @click="updateSaverRuleStatus(row.saverRule)" :value= "row.saverRule.status" type="primary" on-text="on" off-text="off" ></base-switch>
                             </el-tooltip>
                             <el-tooltip content="Delete" effect="light" :open:delay="300" placement="top">
-                            <base-button type="danger" icon size="small" class="btn-link" @click="deleteDevice(row)">
+                            <base-button type="danger" icon size="sm" class="btn-link" @click="deleteDevice(row)">
                             <i class="tim-icons icon-simple-remove"></i>
                             </base-button>
                         </el-tooltip>
                         </div>
                    </el-table-column>
-                   
-
-               </el-table>
+                </el-table>
             </card>            
         </div>
         <h3>Selected device</h3>

@@ -156,10 +156,11 @@
                     },
                     params: { dId: this.config.selectedDevice.dId, variable: this.config.variable, chartTimeAgo: this.config.chartTimeAgo }
                 }
-                console.log("va a llamar a la API de CHART");
+                console.log("LLama a la API de CHART");
                 this.$axios.get("/get-small-charts-data", axiosHeader)
                     .then(res => {                        
                         const data = res.data.data;
+                        console.log("respondio API:"+res.data.data.length);
                         data.forEach(element => {
                            // console.log("element.value"+element.value);
                             var aux = []
