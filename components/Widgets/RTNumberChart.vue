@@ -161,7 +161,7 @@
                     .then(res => {     
                         this.chartOptions.series[0].data = [];                   
                         const data = res.data.data;
-                        console.log("respondio API(length):"+res.data.data.length);
+                        console.log("respondio API(data.length):"+res.data.data.length);
                         data.forEach(element => {
                            // console.log("element.value"+element.value);
                             var aux = []
