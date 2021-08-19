@@ -18,7 +18,6 @@
 
     </card>
 </template>
-
 <script>
     export default {
         name: 'rtnumberchart',
@@ -206,7 +205,6 @@
                 } catch (error) {
                    console.log(error); 
                 }
-
             },
             getNow() {
                 this.nowTime = Date.now();
