@@ -107,11 +107,11 @@
                         this.$nuxt.$off(this.topic + "/sdata");  
                         this.topic = this.config.userId + '/' + this.config.selectedDevice.dId + '/' + 
                         this.config.variable;
-                        this.$nuxt.$on(this.topic + "/sdata", this.processReceivedData);                                              
-                        this.chartOptions.series[0].name = this.config.variableFullName + " " + 
-                        this.config.unit;
+                        this.$nuxt.$on(this.topic + "/sdata", this.processReceivedData);   
                         this.chartOptions.series[0].data = [];
                         this.getChartData();
+                        this.chartOptions.series[0].name = this.config.variableFullName + " " + 
+                        this.config.unit;
                         this.updateColorClass();
                         window.dispatchEvent(new Event('resize'));
                     },300);
@@ -124,7 +124,7 @@
             this.updateColorClass();
         },
         beforeDestroy() {
-            this.$nuxt.$off(this.topic + "/sdata", this.processReceivedData);
+            this.$nuxt.$off(this.topic + "/sdata");
         },
         methods: {
             updateColorClass() {
@@ -160,7 +160,7 @@
                 this.$axios.get("/get-small-charts-data", axiosHeader)
                     .then(res => {                        
                         const data = res.data.data;
-                        console.log("respondio API:"+res.data.data.length);
+                        console.log("respondio API(length):"+res.data.data.length);
                         data.forEach(element => {
                            // console.log("element.value"+element.value);
                             var aux = []
@@ -198,7 +198,7 @@
                 this.value = data.value;
                 setTimeout(() => {
                     if(data.save == 1){
-                        console.log("procesando datos");
+                        console.log("procesando datos chart");
                         this.getChartData();
                     }
                 }, 1000);                    
