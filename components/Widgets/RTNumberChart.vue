@@ -158,7 +158,8 @@
                 }
                 console.log("LLama a la API de CHART");
                 this.$axios.get("/get-small-charts-data", axiosHeader)
-                    .then(res => {                        
+                    .then(res => {     
+                        this.chartOptions.series[0].data = [];                   
                         const data = res.data.data;
                         console.log("respondio API(length):"+res.data.data.length);
                         data.forEach(element => {
