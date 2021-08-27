@@ -35,6 +35,18 @@ app.listen(process.env.API_PORT, () => {
     console.log("API server listening in port " + process.env.API_PORT);
 });
 
+//listener para redireccionamiento de ingreso no seguro a seguro
+if(process.env.enviromment != "dev"){
+    const app2 = express();
+    app2.listen(3002, function(){
+        console.log("listening on port 3002(for redirect to ssl)");
+    });
+    app2.all('*', function(req,res){
+        console.log("No SSL access....Redirecting");
+        return res.redirect("https://" + req.headers["host"] + req.url);
+    });
+}
+
 //endpoints
 /*
 app.get("/api", (req, res) => {
