@@ -72,7 +72,6 @@
             path: '/dashboards'
           }"
         >
-                >
         </sidebar-item>
                 <sidebar-item
           :link="{
