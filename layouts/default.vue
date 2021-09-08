@@ -72,6 +72,15 @@
             path: '/dashboards'
           }"
         >
+                >
+        </sidebar-item>
+                <sidebar-item
+          :link="{
+            name: 'Integrations',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/integrations'
+          }"
+        >
         </sidebar-item>
                 <sidebar-item
           :link="{
@@ -95,7 +104,6 @@
     <div class="main-panel" :data="sidebarBackground">
       <dashboard-navbar></dashboard-navbar>
       <router-view name="header"></router-view>
-
       <div
         :class="{ content: !isFullScreenRoute }"
         @click="toggleSidebar"
