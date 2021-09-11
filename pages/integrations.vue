@@ -3,6 +3,9 @@
         <div>
             <h2>Integrations</h2>
         </div>
+        <div class="col-12" >
+            <base-button @click="ewelinkTest()" type="primary" class="mb-3" size="lg" >Ewelink</base-button>   
+            </div>        
         <!--Form add ewelink account-->
         <div class="row">
             <card>
@@ -82,7 +85,6 @@
 import { Table, TableColumn } from 'element-ui';
 import { Select, Option } from 'element-ui';
 import BaseButton from '../components/BaseButton.vue';
-
 const ewelink = require('ewelink-api');
 export default {
     data(){
@@ -97,9 +99,30 @@ export default {
         };
     },
     mounted(){
-    this.getEwelinkAccounts();
+    //this.getEwelinkAccounts();
     },
     methods:{
+        async ewelinkTest() {
+            const connection = new ewelink({
+                email: 'bachediaz.control@gmail.com',
+                password: 'Bpjm2828',
+                region: 'us'
+            });
+
+            /* get all devices */
+            const devices = await connection.getDevices();
+            console.log(devices);
+            var fin = Date.now();
+            console.log(fin);
+            console.log("delay ="+(fin-inicio)/1000 + "segundos");
+
+    /* get specific devide info */
+ //   const device = await connection.getDevice('<your device id>');
+   // console.log(device);
+
+    /* toggle device */
+    //await connection.toggleDevice('<your device id>');
+            },        
         async getEwelinkAccounts(){
             const axiosHeader = {
                 headers: {
