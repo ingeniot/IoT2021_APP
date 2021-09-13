@@ -1,18 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const ewelink = require('ewelink-api');
+//const ewelink = require('ewelink-api');
 //List dashboards
 router.get('/ewelink/get-devices', async(req, res)=>{
     try {
-        const connection = new ewelink({
+ //       const connection = new ewelink({
+         const connection = {    
             email: 'bachediaz.control@gmail.com',
             password: 'Bpjm2828',
             region: 'us'
-        });
-
+  //      });
+         };
         /* get all devices */
-        const devices = await connection.getDevices();
-        console.log(devices);
+        //const devices = await connection.getDevices();
+        //console.log(devices);
+        decices = {
+            name: sonoff
+        }
         var fin = Date.now();
         console.log(fin);
         console.log("delay ="+(fin-inicio)/1000 + "segundos");
