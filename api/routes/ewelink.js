@@ -41,3 +41,5 @@ router.get('/ewelink/get-devices', async(req, res)=>{
         return res.status(500).json(response);         
     }
 });
+
+module.exports = router;
