@@ -29,6 +29,7 @@ app.use('/api',require('./routes/emqxapi.js'));
 app.use('/api',require('./routes/saver-rules.js'));
 app.use('/api',require('./routes/rules.js'));
 app.use('/api',require('./routes/dataprovider.js'));
+app.use('/api',require('./routes/ewelink.js'));
 //listener
 
 app.listen(process.env.API_PORT, () => {
