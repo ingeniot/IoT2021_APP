@@ -266,10 +266,10 @@ export default {
                 }
             };*/
             try {
-             //   const res = await this.$axios.get("/ewelink/get-devices");
+                const res = await this.$axios.get("/ewelink/get-devices");
                 console.log("pide dispositivos a la api de esprress");
-                //if (res.data.status == "success"){
-                //this.dashboards = res.data.data;
+                if (res.data.status == "success"){
+                this.devices = res.data.data;
                 }
             } catch (error) {
                 this.$notify({
