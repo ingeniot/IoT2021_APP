@@ -1,0 +1,21 @@
+Ejecución en local (Mismo equipo entorno de desarrollo)
+
+Ejecutar docker desktop
+En carpetas services: (Correr servicios mongo y EMQX)
+docker-compose up
+
+En carpeta app: (Ejecutar aplicacion)
+npm run dev
+
+
+Ejecutar en PC
+
+En carpeta services ...
+
+En carpeta app
+
+git clone https://github.com/ingeniot/IoT2021_app.git      Para traer la aplicación desde el repositorio
+npm install                                                 Para generar la carpera node_modules con todas las dependencias
+
+
+
