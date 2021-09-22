@@ -75,6 +75,14 @@
         </sidebar-item>
                 <sidebar-item
           :link="{
+            name: 'Integrations',
+            icon: 'tim-icons icon-chart-pie-36',
+            path: '/integrations'
+          }"
+        >        
+        </sidebar-item>
+                <sidebar-item
+          :link="{
             name: 'Logs',
             icon: 'tim-icons icon-chart-pie-36',
             path: '/logs'

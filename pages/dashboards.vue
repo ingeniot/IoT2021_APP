@@ -886,6 +886,8 @@ export default {
       try {
         const res = await this.$axios.get("/dashboard", axiosHeader);
         console.log(res.data);
+        console.log("respuesta API:", res.data);
+        console.log("respuesta API:", res.data.data[0].name);
         if (res.data.status == "success"){
           this.dashboards = res.data.data;
         }

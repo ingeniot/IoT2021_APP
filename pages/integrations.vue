@@ -74,11 +74,11 @@
             </card>            
         </div>
         <h3>Selected account</h3>
-        <Json :value="$store.state.selectedEwelinkAccount"></Json>        
+ <!--       <Json :value="$store.state.selectedEwelinkAccount"></Json>        
                 <h3>Ewelink accounts</h3>
         <Json  :value="$store.state.ewelinkAccounts"></Json>
                 <h3>Regions</h3>
-        <Json :value="regions"></Json>
+        <Json :value="regions"></Json>-->
     </div>      
 </template>
 <script>
@@ -86,15 +86,27 @@ import { Table, TableColumn } from 'element-ui';
 import { Select, Option } from 'element-ui';
 import BaseButton from '../components/BaseButton.vue';
 export default {
+    components: {
+        [Table.name]: Table,
+        [TableColumn.name]: TableColumn,
+        [Option.name]: Option,
+        [Select.name]: Select
+    },
     data(){
+
         return{
+            sidebarBackground: 'vue', //vue|blue|orange|green|red|primary
             regions: [],
             selectedRegion: null,
             newEwelink: {
                 user:"",
                 password:"",
-                region:""
-            }
+                region:""            
+            },
+            connection:'',
+            devices: [],
+            name: 'sinnombre'
+
         };
     },
     mounted(){
@@ -266,16 +278,26 @@ export default {
                 }
             };*/
             try {
+                console.log("Ejecuta getDevices()");
                 const res = await this.$axios.get("/ewelink/get-devices");
                 console.log("pide dispositivos a la api de esprress");
                 if (res.data.status == "success"){
-                this.devices = res.data.data;
+                //this.devices = res.data.name;
+                //this.connection = res.data.connection;
+
+                console.log("respuesta1: ",res.data.status);
+                console.log("respuesta2: ",res.data.data);
+                console.log("respuesta3: ",res.data.nombre);
+                this.name = res.data.data;
+                console.log("nombre",this.name);
+                //console.log("respuesta2: ",res.data.connection.region);             
+
                 }
             } catch (error) {
                 this.$notify({
                 type: "danger",
                 icon: "tim-icons icon-alert-circle-exc",
-                message: "Error getting dashboards"
+                message: "Error getting devices"
                 });
                 console.log(error);
                 return;
