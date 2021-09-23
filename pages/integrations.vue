@@ -96,7 +96,10 @@ export default {
 
         return{
             sidebarBackground: 'vue', //vue|blue|orange|green|red|primary
-            regions: [],
+            regions: [
+                us,
+                cn
+            ],
             selectedRegion: null,
             newEwelink: {
                 user:"",
@@ -171,7 +174,7 @@ export default {
                 newEwelinkAccount: this.newEwelinkAccount
             };
             this.$axios
-                .post("/ewelink-account", toSend, axiosHeader)
+                .post("/ewelink", toSend, axiosHeader)
                 .then(res => {
                     if(res.data.status == "success") {
                     this.$store.dispatch("getEwelinkAccounts");

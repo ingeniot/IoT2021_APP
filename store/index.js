@@ -2,7 +2,8 @@ export const state = () =>({
     auth: null,
     devices: [],
     selectedDevice: {},
-    notifications: []
+    notifications: [],
+    ewelinkAccounts: []
 })
 
 export const mutations = {
@@ -19,8 +20,10 @@ export const mutations = {
     },
     setNotifications(state, notifications){
         state.notifications = notifications;
+    },
+    setEwelinkAccounts(state, ewelinkAccounts){
+        state.ewelinkAccounts = ewelinkAccounts;
     }
-
 
 }
 
@@ -68,7 +71,23 @@ export const actions = {
         }).catch(error=> {
             console.log(error);
         });
-}}  
+    },
+    getEwelinkAccounts(){
+    console.log("getEwelinkAccounts");
+        const axiosHeader = {
+            headers: {
+                token: this.state.auth.token
+            }
+        } 
+        this.$axios.get("/ewelink-accounts", axiosHeader)
+            .then(res=>{
+                console.log(res.data.data);
+                const ewelinkAccounts = res.data.data;
+                console.log("Cuentas ewelink recibidas desde el backend"+ewelinkAccounts);
+                this.commit('setEwelinkAccounts',ewelinkAccounts); 
+            });  
+    },
+}  
 
 
 
