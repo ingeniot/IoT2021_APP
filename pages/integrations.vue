@@ -93,7 +93,6 @@ export default {
         [Select.name]: Select
     },
     data(){
-
         return{
             sidebarBackground: 'vue', //vue|blue|orange|green|red|primary
             regions: [
@@ -109,7 +108,6 @@ export default {
             connection:'',
             devices: [],
             name: 'sinnombre'
-
         };
     },
     mounted(){
@@ -220,7 +218,7 @@ export default {
                     this.$notify({
                     type: "success",
                     icon: "tim-icons icon-check-2",
-                    message: ewelinkAccount.user + " deleted!"
+                    message: newEwelinkAccount.user + " deleted!"
                     });
                     this.$store.dispatch("getEwelinkAccounts");
                 }
