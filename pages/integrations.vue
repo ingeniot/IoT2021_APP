@@ -14,10 +14,10 @@
             </div>
             <div class="row">
                 <div class="col-4">
-                    <base-input label="Ewelink user" type="text" placeholder="User*" v-model="newEwelink.user"></base-input>
+                    <base-input label="Ewelink user" type="text" placeholder="User*" v-model="newEwelinkAccount.user"></base-input>
             </div>         
                 <div class="col-4">
-                    <base-input label="Ewlink password" type="text" placeholder="Password*" v-model="newEwelink.password"></base-input>
+                    <base-input label="Ewlink password" type="text" placeholder="Password*" v-model="newEwelinkAccount.password"></base-input>
             </div>    
                  <div class="col-4">
                     <slot name="label"> 
@@ -25,7 +25,7 @@
                     </slot>
 
                     <el-select v-model="selectedRegion" placeholder="Select region" class="select-primary" style="width:100%">
-                        <el-option v-for = "(region, index) in regions" :key= "region"  class="text-dark" :value= "index" :label= "region"></el-option>
+                        <el-option v-for = "(region, index) in regions" :key= "region"  class="text-dark" :value= "region" :label= "region"></el-option>
                     </el-select>
             </div>   
                    
@@ -101,7 +101,7 @@ export default {
                 cn
             ],
             selectedRegion: null,
-            newEwelink: {
+            newEwelinkAccount: {
                 user:"",
                 password:"",
                 region:""            
