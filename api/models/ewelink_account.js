@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const ewelinkAccountSchema = new Schema({
     userId: {type: String, required: [true]},
-    name: {type: String, required: [true]},
+    user: {type: String, required: [true]},
     password: {type: String, required: [true]},
     region: {type: String, required: [true]},
     createdTime: {type: Number}

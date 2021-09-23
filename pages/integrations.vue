@@ -51,7 +51,7 @@
                         </div>
                     </el-table-column>
 
-                    <el-table-column label="User" prop="name"></el-table-column>
+                    <el-table-column label="User" prop="user"></el-table-column>
                     <el-table-column label="Password"  prop="password"></el-table-column>
                     <el-table-column label="Region"  prop="region"></el-table-column>
                     <el-table-column label="Actions">
@@ -140,11 +140,11 @@ export default {
             }
         },
         createEwelinkAccount(ewelinkAccount) {
-            if(this.newEwelinkAccount.name == ""){
+            if(this.newEwelinkAccount.user == ""){
                     this.$notify({
                     type: "warning",
                     icon: "tim-icons icon-alert-circle-exc",
-                    message: "Ewelink account name is empty"
+                    message: "Ewelink account user is empty"
                     }); 
                     return;               
             }
