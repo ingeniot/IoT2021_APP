@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {checkAuth} = require('../middlewares/authentication.js');
 const ewelink = require('ewelink-api');
 var inicio = Date.now();
 router.get('/ewelink/get-devices', async(req, res)=>{
